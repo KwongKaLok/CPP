@@ -1,0 +1,1 @@
+color_position_correct_array
