@@ -16,6 +16,10 @@ int main()
     int p2 = rand() % 6 + 1; // 1 to 6
     int p3 = rand() % 6 + 1; // 1 to 6
 
+    // int p0 = 4; // 1 to 6
+    // int p1 = 1; // 1 to 6
+    // int p2 = 1; // 1 to 6
+    // int p3 = 4; // 1 to 6
     // variable for code breaker's guess
     int g0;
     int g1;
