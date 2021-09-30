@@ -83,7 +83,6 @@ void filtering_by_occurrence(unsigned int number_to_process, unsigned int occurr
 {
     int digit_array[10];
     int digit;
-    int temp_number_to_process;
     int k = 0;
     for (int i = 0; i < 10; i++)
     {
@@ -93,8 +92,6 @@ void filtering_by_occurrence(unsigned int number_to_process, unsigned int occurr
     do
     {
         bool repeated = false;
-
-        temp_number_to_process = number_to_process;
         digit = number_to_process % 10;
 
         if (occurrence_counting(number_to_process, digit) > occurrence_threshold)
@@ -112,7 +109,6 @@ void filtering_by_occurrence(unsigned int number_to_process, unsigned int occurr
                 k++;
             }
         };
-
     } while (number_to_process /= 10);
 
     int temp;
@@ -124,7 +120,6 @@ void filtering_by_occurrence(unsigned int number_to_process, unsigned int occurr
             j = i;
             while ((digit_array[j] > digit_array[j + 1]) && (j != -1))
             {
-
                 temp = digit_array[j];
                 digit_array[j] = digit_array[j + 1];
                 digit_array[j + 1] = temp;
