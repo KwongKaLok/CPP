@@ -141,7 +141,7 @@ int swapAndRecord(int arr[], int arrLen, int indexA, int indexB, int rotations[]
     }
     else
     {
-        cout << "Error: Index index is out of range." << endl;
+        cout << "Error: Index out of range." << endl;
         return -1;
     }
     // End of Task 2 TODO
