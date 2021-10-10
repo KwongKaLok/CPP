@@ -151,7 +151,40 @@ int swapAndRecord(int arr[], int arrLen, int indexA, int indexB, int rotations[]
 void sortAndRecord(int arr[], int arrLen, int rotations[], int &rotationLen)
 {
     // Task 3 TODO
+    bool swapped;
+    int temp_rotationLen = 0;
+    int temp_rotations[MAX_ROTATIONS];
+    rotationLen = 0;
+    for (int i = 0; i < MAX_ROTATIONS; i++)
+    {
+        rotations[i] = 0;
+        temp_rotations[i] = 0;
+    }
 
+    do
+    {
+        swapped = false;
+        for (int i = 1; i < arrLen; i++)
+        {
+            if (arr[i - 1] > arr[i])
+            {
+                swapAndRecord(arr, arrLen, i - 1, i, rotations, rotationLen);
+                swapped = true;
+
+                for (int i = 0; i < rotationLen; i++)
+                {
+                    temp_rotations[temp_rotationLen + i] = rotations[i];
+                }
+                temp_rotationLen += rotationLen;
+            }
+        }
+
+    } while (swapped);
+    for (int i = 0; i < temp_rotationLen; i++)
+    {
+        rotations[i] = temp_rotations[i];
+    }
+    rotationLen = temp_rotationLen;
     // End of Task 3 TODO
 }
 
@@ -159,7 +192,49 @@ void sortAndRecord(int arr[], int arrLen, int rotations[], int &rotationLen)
 int transformAndRecord(int src[], int tgt[], int arrLen, int rotations[], int &rotationLen)
 {
     // Task 4 TODO
-
+    bool same;
+    int temp_src[arrLen];
+    int temp_tgt[arrLen];
+    int temp_rotationLen = 0;
+    int temp_rotations[MAX_ROTATIONS];
+    for (int i = 0; i < arrLen; i++)
+    {
+        temp_src[i] = src[i];
+        temp_tgt[i] = tgt[i];
+    }
+    sortAndRecord(temp_src, arrLen, rotations, rotationLen);
+    sortAndRecord(temp_tgt, arrLen, rotations, rotationLen);
+    for (int i = 0; i < arrLen; i++)
+    {
+        if (temp_src[i] != temp_tgt[i])
+        {
+            return -1;
+        }
+    }
+    for (int i = 0; i < arrLen; i++)
+    {
+        if (src[i] != tgt[i])
+        {
+            for (int j = 0; j < arrLen; j++)
+            {
+                if (src[i] == tgt[j])
+                {
+                    swapAndRecord(src, arrLen, i, j, rotations, rotationLen);
+                    for (int i = 0; i < rotationLen; i++)
+                    {
+                        temp_rotations[temp_rotationLen + i] = rotations[i];
+                    }
+                    temp_rotationLen += rotationLen;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < temp_rotationLen; i++)
+    {
+        rotations[i] = temp_rotations[i];
+    }
+    rotationLen = temp_rotationLen;
+    return 0;
     // End of Task 4 TODO
 }
 

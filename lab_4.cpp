@@ -26,8 +26,6 @@ void h_flip(const char s[][NUM_COL_MAX + 1], int num_row, int num_col, char h_fl
 { /* horizontal flip */
     // Task 1: horizontal flip of the 2D array, concatenate with the original 2D array
     // Please fill in your code here
-    int count_row = 0;
-    int count_col = 0;
     for (int i = 0; i < NUM_ROW_MAX; i++)
         for (int j = 0; j < NUM_COL_MAX; j++)
             h_flipped[i][j] = ' ';
@@ -47,7 +45,6 @@ void v_flip(const char s[][NUM_COL_MAX + 1], int num_row, int num_col, char v_fl
 { /* vertical flip */
     // Task 2: vertial flip of the 2D array, concatenate with the original 2D array
     // Please fill in your code here
-
     for (int i = 0; i < NUM_ROW_MAX; i++)
         for (int j = 0; j < NUM_COL_MAX; j++)
             v_flipped[i][j] = ' ';
