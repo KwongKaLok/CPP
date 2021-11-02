@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "__tuple": "cpp",
+        "array": "cpp",
+        "__bit_reference": "cpp",
+        "algorithm": "cpp"
+    }
+}

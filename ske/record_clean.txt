@@ -1,0 +1,12 @@
+Alice	90
+Jack	80
+Alex	90
+Mary	85
+David	95
+Charles	100
+Linda	90
+Peter	80
+Tony	90
+Simon	85
+Nancy	95
+Harry	100
