@@ -74,77 +74,61 @@ int findShortestDistance(int robot_x, int robot_y, int target_x, int target_y, i
    struct pa2
    {
       int total;
-      int up;
+      int up_OR_dwon;
       int right;
-      int down;
       int left;
    };
    pa2 path;
-   path.total = PA2_MAX_PATH;
-   path.up = PA2_MAX_PATH;
-   path.right = PA2_MAX_PATH;
-   path.down = PA2_MAX_PATH;
-   path.left = PA2_MAX_PATH;
-   char check_map[MAP_HEIGHT][MAP_WIDTH];
    copyMap(temp_map, map);
-   if (temp_map[target_y][target_x] == 'B' || target_y < 0 || target_y >= MAP_HEIGHT || target_x >= MAP_WIDTH || target_x < 0)
+   if (map[target_y][target_x] == 'B' || map[robot_y][robot_x] == 'B' || target_y < 0 || target_x < 0 || robot_x < 0 ||
+       robot_y < 0 || target_y >= MAP_HEIGHT || target_x >= MAP_WIDTH || robot_y >= MAP_HEIGHT || robot_x >= MAP_WIDTH || robot_energy < 0)
 
    {
       return PA2_MAX_PATH;
    }
    else
    {
-      char current = temp_map[robot_y][robot_x];
-      if (robot_energy >= 0 && robot_y >= 0 && robot_y < MAP_HEIGHT && robot_x >= 0 && robot_x < MAP_WIDTH && temp_map[robot_y][robot_x] != 'B')
+      path.total = PA2_MAX_PATH;
+      path.up_OR_dwon = PA2_MAX_PATH;
+      path.right = PA2_MAX_PATH;
+      path.left = PA2_MAX_PATH;
+
+      if (robot_x == target_x && robot_y == target_y)
       {
-         if (robot_x == target_x && robot_y == target_y)
-         {
-            return 1;
-         }
-         else
-         {
-
-            if (current == ' ')
-            {
-
-               path.up = findShortestDistance(robot_x - 1, robot_y, target_x, target_y, robot_energy - 1, robot_full_energy, temp_map, temp_map) + 1;
-               path.right = findShortestDistance(robot_x + 1, robot_y, target_x, target_y, robot_energy - 1, robot_full_energy, temp_map, temp_map) + 1;
-               path.down = findShortestDistance(robot_x, robot_y - 1, target_x, target_y, robot_energy - 1, robot_full_energy, temp_map, temp_map) + 1;
-               path.left = findShortestDistance(robot_x, robot_y + 1, target_x, target_y, robot_energy - 1, robot_full_energy, temp_map, temp_map) + 1;
-            }
-
-            else if (current == 'R' || current == 'C')
-            {
-               temp_map[robot_y][robot_x] = ' ';
-               path.up = findShortestDistance(robot_x - 1, robot_y, target_x, target_y, robot_full_energy, robot_full_energy, temp_map, temp_map) + 1;
-               path.right = findShortestDistance(robot_x + 1, robot_y, target_x, target_y, robot_full_energy, robot_full_energy, temp_map, temp_map) + 1;
-               path.down = findShortestDistance(robot_x, robot_y - 1, target_x, target_y, robot_full_energy, robot_full_energy, temp_map, temp_map) + 1;
-               path.left = findShortestDistance(robot_x, robot_y + 1, target_x, target_y, robot_full_energy, robot_full_energy, temp_map, temp_map) + 1;
-            }
-
-            if (path.up < path.total)
-            {
-               path.total = path.up;
-            }
-            if (path.right < path.total)
-            {
-               path.total = path.right;
-            }
-            if (path.down < path.total)
-            {
-               path.total = path.down;
-            }
-            if (path.left < path.total)
-            {
-               path.total = path.left;
-            }
-
-            return path.total;
-         }
+         return 1;
       }
       else
       {
-         return PA2_MAX_PATH;
+         if (map[robot_y][robot_x] == 'C'|| map[robot_y][robot_x] == 'R'&& temp_map[robot_y][robot_x] != 'X')
+         {
+            temp_map[robot_y][robot_x] = 'X'; //the machine have eaten the charger C, and not come back
+            robot_energy = robot_full_energy;
+         }
+
+         if (target_y>robot_y) //the target is above the machine, it goes up first
+         {
+            path.up_OR_dwon=findShortestDistance(robot_x, robot_y + 1, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
+         }
+         else  //the target is below the machine, it goes down first
+         {
+            path.left = findShortestDistance(robot_x - 1, robot_y, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
+            path.right = findShortestDistance(robot_x + 1, robot_y, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
+            path.up_OR_dwon = findShortestDistance(robot_x, robot_y - 1, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
+         }        
+         if (path.up_OR_dwon < path.total)
+         {
+            path.total = path.up_OR_dwon;
+         }
+         if (path.right < path.total)
+         {
+            path.total = path.right;
+         }
+         if (path.left < path.total)
+         {
+            path.total = path.left;
+         }
+
+         return path.total;
       }
    }
 }
