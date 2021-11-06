@@ -20,6 +20,9 @@ using namespace std;
 */
 void setPriority(Person &p)
 {
+
+    int job_p;
+    int age_p;
     switch (p.job)
     {
     case 'M':
@@ -27,8 +30,10 @@ void setPriority(Person &p)
         break;
     case 'S':
         p.priority = 2;
+        break;
     case 'O':
         p.priority = 1;
+        break;
     default:
         break;
     }
@@ -66,6 +71,47 @@ void setPriority(Person &p)
 */
 void prioritySort(Person queue[], Person *pointerqueue[], int size)
 {
+    int highest;
+    bool isMax;
+    int position;
+    for (int i = 0; i < size; i++)
+    {
+        highest = 0;
+        isMax = true;
+
+        for (int j = 0; j < size; j++)
+        {
+            if (queue[j].priority > highest && !queue[j].vaccined)
+            {
+                for (int k = 0; k < i; k++)
+                {
+                    if (pointerqueue[k] == &queue[j])
+                    {
+                        isMax = false;
+                        break;
+                    }
+                    else
+                    {
+                        isMax = true;
+                    }
+                }
+                if (isMax)
+                {
+                    highest = queue[j].priority;
+                    position = j;
+                }
+            }
+        }
+        if (highest != -1)
+        {
+            pointerqueue[i] = &queue[position];
+        }
+        else
+        {
+            pointerqueue[i] = 0;
+        }
+    }
+    
     
 }
 
@@ -77,6 +123,14 @@ void prioritySort(Person queue[], Person *pointerqueue[], int size)
 */
 void vaccinateTopPriority(Person queue[], Person *pointerqueue[], int size)
 {
+    pointerqueue[0]->priority = true;
+    for (int i = 0; i < size; i++)
+    {
+        if (i < size - 1)
+            pointerqueue[i] = pointerqueue[i + 1];
+        else
+            pointerqueue[i] = 0;
+    }
 }
 
 /* 
@@ -88,4 +142,14 @@ void vaccinateTopPriority(Person queue[], Person *pointerqueue[], int size)
 */
 void addPerson(int id, const char name[], char job, int age, Person queue[], Person *pointerqueue[], int &size)
 {
+    for (int i = 0; i < 10; i++)
+    {
+        queue[size].name[i] = name[i];
+    }
+    queue[size].id = id;
+    queue[size].job = job;
+    queue[size].age = age;
+    queue[size].vaccined = false;
+    pointerqueue[size] = &queue[size];
+    setPriority(queue[size]);
 }

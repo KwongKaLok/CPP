@@ -14,12 +14,14 @@ void initQueues(Person signupqueue[], Person* priorityqueue[], int size, const c
     for (int i = 0; i < size; i++) {
         fin >> id >> name >> job >> age;
         // YOU NEED TO IMPLEMENT addPerson FUNCTION
-        addPerson(id, name, job, age, signupqueue, priorityqueue, i);
+        addPerson(id, name, job, age, signupqueue, priorityqueue, i);     
     }
+    prioritySort(signupqueue,priorityqueue,size);
 }
 
 int main()
-{
+{   
+    system("CLS");
     int queue_length;
     int priority_queue_length;
     Person SignUpQueue[MAX_PERSON];   // array of Peron
@@ -57,6 +59,7 @@ int main()
             addPerson(id, name, job, age, SignUpQueue, PriorityQueue, queue_length);
             queue_length++;
             priority_queue_length++;
+            prioritySort(SignUpQueue,PriorityQueue,queue_length);
             cout << "A new person has signed up, the priority queue is: " << endl;
             printPriorityQueue(PriorityQueue, priority_queue_length);
             break;
