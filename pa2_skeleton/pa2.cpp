@@ -46,7 +46,6 @@ int findMaximumPlace(int robot_x, int robot_y, int robot_energy, int robot_full_
 
 int findShortestDistance(int robot_x, int robot_y, int target_x, int target_y, int robot_energy, int robot_full_energy, const char map[MAP_HEIGHT][MAP_WIDTH], char temp_map[MAP_HEIGHT][MAP_WIDTH])
 {
-
    struct pa2
    {
       int total;
@@ -94,19 +93,22 @@ int findShortestDistance(int robot_x, int robot_y, int target_x, int target_y, i
          }
          else
          {
-            if (target_y > robot_y) //the target is above the machine, it goes up first
+            if (robot_y > target_y && map[robot_y - 1][robot_x] != 'B')
             {
-               if (!((map[robot_y + 1][robot_x + 1] == 'B' && map[robot_y + 1][robot_x - 1] == 'B') && robot_y + 1 == target_y) || robot_x + 1 > MAP_WIDTH && map[robot_y + 1][robot_x - 1] == 'B' || robot_x - 1 < 0 && map[robot_y + 1][robot_x + 1] == 'B')
-                  path.up_OR_dwon = findShortestDistance(robot_x, robot_y + 1, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
-               else
-                  path.up_OR_dwon = PA2_MAX_PATH;
-            }
-            else //the target is below the machine, it goes down first
-            {
-               if (!((map[robot_y - 1][robot_x + 1] == 'B' && map[robot_y - 1][robot_x - 1] == 'B') && robot_y - 1 == target_y) || robot_x + 1 > MAP_WIDTH && map[robot_y - 1][robot_x - 1] == 'B' || robot_x - 1 < 0 && map[robot_y - 1][robot_x + 1] == 'B')
+               if (!((robot_x - 1 < 0 && map[robot_y - 1][robot_x + 1] == 'B' || robot_x + 1 >= MAP_WIDTH && map[robot_y - 1][robot_x - 1] == 'B' || map[robot_y - 1][robot_x + 1] == 'B' && map[robot_y - 1][robot_x - 1] == 'B') && robot_y - 1 == target_y) || (robot_y - 1 == target_y && robot_x == target_x))
                   path.up_OR_dwon = findShortestDistance(robot_x, robot_y - 1, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
                else
                   path.up_OR_dwon = PA2_MAX_PATH;
+            }
+            else
+            {
+               if (!(map[robot_y + 1][robot_x ] == 'B' && map[robot_y ][robot_x + 1] == 'B' && map[robot_y ][robot_x - 1] == 'B'))
+                  if (!((robot_x - 1 < 0 && map[robot_y + 1][robot_x + 1] == 'B' || robot_x + 1 >= MAP_WIDTH && map[robot_y + 1][robot_x - 1] == 'B' || map[robot_y + 1][robot_x + 1] == 'B' && map[robot_y + 1][robot_x - 1] == 'B') && robot_y + 1 == target_y) || (robot_y + 1 == target_y && robot_x == target_x))
+                     path.up_OR_dwon = findShortestDistance(robot_x, robot_y + 1, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
+                  else
+                     path.up_OR_dwon = PA2_MAX_PATH;
+               else
+                  path.up_OR_dwon = findShortestDistance(robot_x, robot_y - 1, target_x, target_y, robot_energy - 1, robot_full_energy, map, temp_map) + 1;
             }
          }
 
@@ -210,32 +212,37 @@ int findPathSequence(int robot_x, int robot_y, int target_x, int target_y, int r
          }
          result_sequence[strlen(result_sequence)] = sequence;
       }
-      switch (sequence)
+      if (sequence == 'U')
       {
-      case 'D':
-         findPathSequence(robot_x, robot_y + 1, target_x, target_y, robot_energy - 1,
-                          robot_full_energy, result_sequence, map, temp_map);
-         copyMap(temp_map, clean_map);
-         break;
-      case 'U':
          findPathSequence(robot_x, robot_y - 1, target_x, target_y, robot_energy - 1,
                           robot_full_energy, result_sequence, map, temp_map);
          copyMap(temp_map, clean_map);
-         break;
-      case 'L':
-         findPathSequence(robot_x - 1, robot_y, target_x, target_y, robot_energy - 1,
-                          robot_full_energy, result_sequence, map, temp_map);
-         copyMap(temp_map, clean_map);
-         break;
-      case 'R':
+      }
+      else if (sequence == 'R')
+      {
          findPathSequence(robot_x + 1, robot_y, target_x, target_y, robot_energy - 1,
                           robot_full_energy, result_sequence, map, temp_map);
          copyMap(temp_map, clean_map);
-         break;
-      default:
-         return PA2_MAX_PATH;
-         break;
       }
+      else if (sequence == 'D')
+      {
+         findPathSequence(robot_x, robot_y + 1, target_x, target_y, robot_energy - 1,
+                          robot_full_energy, result_sequence, map, temp_map);
+         copyMap(temp_map, clean_map);
+      }
+
+      else if (sequence == 'L')
+      {
+         findPathSequence(robot_x - 1, robot_y, target_x, target_y, robot_energy - 1,
+                          robot_full_energy, result_sequence, map, temp_map);
+         copyMap(temp_map, clean_map);
+      }
+
+      else
+      {
+         return PA2_MAX_PATH;
+      }
+
       return min_dis;
    }
 }

@@ -65,7 +65,7 @@ int main()
             }
             break;
         case 1:
-            printMap(temp_map);
+            printMap(map);
             break;
 
         case 2:

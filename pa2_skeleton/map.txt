@@ -1,10 +1,10 @@
 BBBBBBBBBBB 
 BBBBBBBBB   
 BBB BBB B B 
-B         BB
-B B  B   BB 
-B           
-  C      BB 
+B        BB
+B B    BB 
+B   B B     
+  C  B  BB 
 B      C  B 
 BBBB BBBBBB 
 B   C  BB   

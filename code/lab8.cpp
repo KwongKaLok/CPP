@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstring>
+#include <string>
+#include <typeinfo>
 #include "lab8.h"
 using namespace std;
 
@@ -71,9 +73,15 @@ void setPriority(Person &p)
 */
 void prioritySort(Person queue[], Person *pointerqueue[], int size)
 {
+
+    // cout<<"This is queue: "<<endl;
+    // cout << typeid(&pointerqueue[0]).name()<<endl;
+    Person *temp[1];
+    bool swapped;
     int highest;
     bool isMax;
     int position;
+
     for (int i = 0; i < size; i++)
     {
         highest = 0;
@@ -111,8 +119,6 @@ void prioritySort(Person queue[], Person *pointerqueue[], int size)
             pointerqueue[i] = 0;
         }
     }
-    
-    
 }
 
 /* 
@@ -123,7 +129,7 @@ void prioritySort(Person queue[], Person *pointerqueue[], int size)
 */
 void vaccinateTopPriority(Person queue[], Person *pointerqueue[], int size)
 {
-    pointerqueue[0]->priority = true;
+    pointerqueue[0]->vaccined = true;
     for (int i = 0; i < size; i++)
     {
         if (i < size - 1)
