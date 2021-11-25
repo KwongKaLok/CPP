@@ -168,30 +168,44 @@ bool swapCar(TrainCar *head, int a, int b)
 
 void sortTrain(TrainCar *head, bool ascending)
 {
-    // int swapped;
-    // TrainCar *left_ptr;
-    // TrainCar *right_ptr = nullptr;
+    int swapped;
+    TrainCar *left_ptr;
+    TrainCar *right_ptr = nullptr;
+    int length = countLength(head) - 1;
 
-    // do
-    // {
-    //     swapped = 0;
-    //     left_ptr = head;
-    //     while (left_ptr->next != right_ptr)
-    //     {
-
-    //         if (left_ptr->load > left_ptr->next->load)
-    //         {
-    //             int left_ptr_position = findCarPosition(head, left_ptr);
-    //             int right_ptr_position = findCarPosition(head, left_ptr->next);
-
-    //             swapCar(head, left_ptr_position, right_ptr_position);
-    //             printTrain(head);
-    //             swapped = 1;
-    //         }
-    //         left_ptr = left_ptr->next;
-    //     }
-    //     right_ptr = left_ptr;
-    // } while (swapped);
+    do
+    {
+        swapped = 0;
+        left_ptr = head->next;
+        while (left_ptr->next != right_ptr)
+        {
+            if (ascending)
+            {
+                if (left_ptr->load > left_ptr->next->load)
+                {
+                    int left_ptr_position = findCarPosition(head, left_ptr);
+                    int right_ptr_position = findCarPosition(head, left_ptr->next);
+                    swapCar(head, left_ptr_position, right_ptr_position);
+                    left_ptr = left_ptr->prev;
+                    swapped = 1;
+                }
+                left_ptr = left_ptr->next;
+            }
+            else
+            {
+                if (left_ptr->load < left_ptr->next->load)
+                {
+                    int left_ptr_position = findCarPosition(head, left_ptr);
+                    int right_ptr_position = findCarPosition(head, left_ptr->next);
+                    swapCar(head, left_ptr_position, right_ptr_position);
+                    left_ptr = left_ptr->prev;
+                    swapped = 1;
+                }
+                left_ptr = left_ptr->next;
+            }
+        }
+        right_ptr = left_ptr;
+    } while (swapped);
 }
 
 bool load(TrainCar *head, CarType type, int amount)
@@ -260,15 +274,14 @@ bool unload(TrainCar *head, CarType type, int amount)
     else
     {
         current = head;
-        do //move the current to the tail
+        do
         {
             current = current->next;
         } while (current->next != nullptr);
 
-
         while (current->prev != nullptr)
         {
-             if (current->type == type)
+            if (current->type == type)
             {
                 if (current->load < amount)
                 {
@@ -281,35 +294,127 @@ bool unload(TrainCar *head, CarType type, int amount)
                     return true;
                 }
             }
-            current=current->prev;
+            current = current->prev;
         }
-        
+
         return false;
     }
 }
 
 void printCargoStats(const TrainCar *head)
 {
-    TrainCar*print_out[5];
-    TrainCar*current;
+    const char enumToStringMapping[6][8] = {"HEAD", "OIL", "COAL", "WOOD", "STEEL", "SUGAR"};
+    TrainCar *type_train[CARGO_TYPE_COUNT];
+    TrainCar *checkCar;
+    bool repeated = false;
+    checkCar = head->next;
+    int k = 0;
+
     for (int i = 0; i < 5; i++)
     {
-        print_out[i]=nullptr;
+        type_train[i] = nullptr;
     }
-    current=head->next;
-   while (current!=nullptr)
-   {
-       
-       current=current->next;
-   }
-   
-    
 
-    
+    type_train[0] = head->next;
+    checkCar = type_train[0]->next;
+    while (checkCar != nullptr)
+    {
+        k = 0;
+        repeated = false;
+        while (type_train[k] != nullptr)
+        {
+
+            if (type_train[k]->type == checkCar->type)
+            {
+                type_train[k]->load = type_train[k]->load + checkCar->load;
+                type_train[k]->maxLoad = type_train[k]->maxLoad + checkCar->maxLoad;
+                repeated = true;
+            }
+            k++;
+        }
+        if (!repeated)
+        {
+            type_train[k] = checkCar;
+        }
+        checkCar = checkCar->next;
+    }
+
+    k = 0;
+
+    while (type_train[k] != nullptr)
+    {
+
+        cout << enumToStringMapping[type_train[k]->type] << ":" << type_train[k]->load << "/" << type_train[k]->maxLoad;
+
+        if (type_train[k + 1] != nullptr)
+        {
+            cout << ",";
+        }
+
+        k++;
+    }
+
+    cout << endl;
 }
 
 void divide(const TrainCar *head, TrainCar *results[CARGO_TYPE_COUNT])
 {
+    TrainCar *type_train[CARGO_TYPE_COUNT];
+    TrainCar *checkCar;
+    bool repeated = false;
+    int k = 0;
+    for (int i = 0; i < 5; i++)
+    {
+        type_train[i] = nullptr;
+        results[i] = nullptr;
+    }
+    checkCar = head->next;
+    type_train[0] = checkCar;
+    while (checkCar != nullptr)
+    {
+        k = 0;
+        repeated = false;
+        while (type_train[k] != nullptr)
+        {
+
+            if (type_train[k]->type == checkCar->type)
+            {
+                repeated = true;
+            }
+            k++;
+        }
+
+        if (!repeated)
+        {
+            type_train[k] = checkCar;
+        }
+        checkCar = checkCar->next;
+    }
+    k = 0;
+    while (type_train[k] != nullptr)
+    {
+        TrainCar *current;
+        results[k] = createTrainHead();
+        current = results[k];
+        checkCar = head->next;
+        int j = 1;
+        while (checkCar != nullptr)
+        {
+            if (checkCar->type == type_train[k]->type)
+            {
+                addCar(results[k], j, checkCar->type, checkCar->maxLoad);
+                while (current->next != nullptr)
+                {
+                    current = current->next;
+                }
+                current->load = checkCar->load;
+                j++;
+            }
+
+            checkCar = checkCar->next;
+        }
+        k++;
+    }
 }
 
 TrainCar *optimizeForMaximumPossibleCargos(const TrainCar *head, int upperBound)
@@ -318,7 +423,6 @@ TrainCar *optimizeForMaximumPossibleCargos(const TrainCar *head, int upperBound)
 
 void deallocateTrain(TrainCar *head)
 {
-
     if (head == nullptr)
         return;
     deallocateTrain(head->next);
