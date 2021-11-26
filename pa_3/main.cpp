@@ -434,8 +434,7 @@ int main()
         cout << "Original train:" << endl;
         printTrain(train);
         cout << endl;
-        TrainCar* results[CARGO_TYPE_COUNT];
-        divide(train, results);
+        optimizeForMaximumPossibleCargos(train,20);
         cout << "Calling deallocateTrain..." << endl;
         deallocateTrain(train);
     }

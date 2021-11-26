@@ -4,10 +4,20 @@
 using namespace std;
 //you are NOT allowed to include any additional library; see FAQ
 
+int findlastone(int arr[], int one, int length)
+{
+    int position = 0;
+    for (int i = 0; i < length; i++)
+    {
+        if (arr[i] == one)
+            position++;
+    }
+    return position;
+}
 int countLength(TrainCar *head)
 {
-    int count = 0;            // Initialize count
-    TrainCar *current = head; // Initialize current
+    int count = 0;            
+    TrainCar *current = head; 
     while (current != NULL)
     {
         count++;
@@ -17,8 +27,8 @@ int countLength(TrainCar *head)
 }
 int findCarPosition(TrainCar *head, TrainCar *position)
 {
-    int count = 0;            // Initialize count
-    TrainCar *current = head; // Initialize current
+    int count = 0;            
+    TrainCar *current = head; 
     while (current != position)
     {
         count++;
@@ -416,9 +426,86 @@ void divide(const TrainCar *head, TrainCar *results[CARGO_TYPE_COUNT])
         k++;
     }
 }
-
 TrainCar *optimizeForMaximumPossibleCargos(const TrainCar *head, int upperBound)
 {
+    int diff = upperBound;
+    int position = 0;
+    TrainCar *tempCar = head->next;
+    while (tempCar != nullptr)
+    {
+        position += 1;
+        tempCar = tempCar->next;
+    }
+    int car_loading[position];
+    int final_car_using[position];
+    int used_car_arr[position];
+    TrainCar *viewer = head->next;
+
+    for (int k = 0; k < position; k++)
+    {
+        car_loading[k] = viewer->load;
+        viewer = viewer->next;
+    }
+
+    for (int i = 0; i < position; i++)
+    {
+        used_car_arr[i] = 0;
+    }
+
+    while (findlastone(used_car_arr, 1, position) != position)
+
+    {
+
+        used_car_arr[0]++;
+
+        for (int j = 0; j < countLength(head->next); j++)
+        {
+            if (used_car_arr[j] == 2)
+            {
+                used_car_arr[j] = 0;
+                used_car_arr[j + 1]++;
+            }
+        }
+
+        int total = 0;
+        for (int i = 0; i < countLength(head->next); i++)
+        {
+            if (used_car_arr[i] == 1)
+            {
+                total += car_loading[i];
+            }
+        }
+
+        if (abs(total - upperBound) < diff)
+        {
+            diff = abs(total - upperBound);
+            for (int m = 0; m < position; m++)
+            {
+                final_car_using[m] = used_car_arr[m];
+            }
+        }
+    }
+
+    TrainCar *new_head = createTrainHead();
+    TrainCar *current = new_head;
+    TrainCar *checkCar = head->next;
+    int location = 0;
+    int w = 1;
+    while (checkCar != nullptr)
+    {
+        if (final_car_using[location++] == 1)
+        {
+            addCar(new_head, w, checkCar->type, checkCar->maxLoad);
+            while (current->next != nullptr)
+            {
+                current = current->next;
+            }
+            current->load = checkCar->load;
+            w++;
+        }
+        checkCar = checkCar->next;
+    }
+    return new_head;
 }
 
 void deallocateTrain(TrainCar *head)
