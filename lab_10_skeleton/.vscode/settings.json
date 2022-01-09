@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "stack": "cpp",
+        "new": "cpp",
+        "iterator": "cpp"
+    }
+}
