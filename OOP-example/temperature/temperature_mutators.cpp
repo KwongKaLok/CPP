@@ -18,3 +18,4 @@ void temperature::set(double d, char s)
         exit(-2);
     }
 }
+
