@@ -6,8 +6,8 @@ int main()
 {
     student_record amy, bob; // Create 2 static student_record objects
 
-    amy.set("Amy", 12345, 'F');   // Put values to their data members
-    bob.set("Bob", 34567, 'M');
+    amy.set("Leizi", 12345, 'F');   // Put values to their data members
+    bob.set("Eason", 34567, 'M');
 
     cout << amy.get_id() << endl; // Get and print some data member
     amy.copy(bob);           // Amy wants to fake with Bob's identity
