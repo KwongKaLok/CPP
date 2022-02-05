@@ -11,3 +11,4 @@ Simon	85
 Nancy	95
 Harry	100
 Eason   100
+Leizi   200
