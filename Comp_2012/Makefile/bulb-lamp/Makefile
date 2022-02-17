@@ -18,7 +18,7 @@ lamp.o: lamp.cpp
 lamp-test.o: lamp-test.cpp 
 	g++ -c lamp-test.cpp
 
-clean:;	/bin/rm lamp-test *.o *.bak
+clean:;	/bin/rm -f lamp-test *.o *.bak
 
 # Utility 'makedepend' finds the .h dependencies automatically
 depend:;	makedepend $(SRCS)
