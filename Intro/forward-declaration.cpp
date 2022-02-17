@@ -4,7 +4,7 @@ class List
 {
     int size;
     Cell* data;   // Points to a (forward-declared) Cell object
-    Cell x;       // Error: Cell not defined yet!
+    // Cell x;       // Error: Cell not defined yet!
 };
 
 class Cell        // Definition of Cell
