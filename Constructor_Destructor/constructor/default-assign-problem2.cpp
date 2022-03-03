@@ -3,9 +3,9 @@
 using namespace std;
 class Word
 {  
-  private: int frequency; char* str;
-    void set(int f, const char* s)
-        { frequency = f; str = new char [strlen(s)+1]; strcpy(str, s); }
+  private: 
+    int frequency; char* str;
+    void set(int f, const char* s) { frequency = f; str = new char [strlen(s)+1]; strcpy(str, s); }
   public:
     Word(const char* s, int k = 1)
         { set(k, s); cout << "\nImplicit const char* conversion\n"; }
@@ -18,8 +18,12 @@ class Word
 
 int main()
 { 
-    Word x("rat");    x.print(); // Conversion constructor
-    Word y = x;       y.print(); // Copy constructor
-    Word z("cat", 2); z.print(); // Conversion constructor
-    z = x;            z.print(); // Default assignment operator
+    Word x("rat");    ; // Conversion constructor
+    Word y = x;       ; // Copy constructor
+    Word z("cat", 2); ; // Conversion constructor
+    z = x;            ; // Default assignment operator
+
+    x.print();
+    y.print();
+    z.print();
 }
