@@ -15,7 +15,7 @@ private:
     Event *events[maxNumEvent];
     Ticket *tickets[maxNumTicket];
     Person *persons[maxNumPerson];
-    
+
     int numEvent;      // Current number of Event.
     int numTicket;     // Current number of Ticket.
     int numPerson;     // Current number of Person.
