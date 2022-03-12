@@ -55,19 +55,19 @@ int main()
             cout << "\"";
         }
 
-        // else if(testCase == 5) //test the deep copy constructor
-        // {
-        //     Polynomial* p1 = new Polynomial(1);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     Polynomial* p2 = new Polynomial(*p1);
-        //     delete p1;
-        //     cout << "\ncopy of p1: \"";
-        //     p2->print();
-        //     cout << "\"";
-        //     delete p2;
-        // }
+        else if(testCase == 5) //test the deep copy constructor
+        {
+            Polynomial* p1 = new Polynomial(1);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            Polynomial* p2 = new Polynomial(*p1);
+            delete p1;
+            cout << "\ncopy of p1: \"";
+            p2->print();
+            cout << "\"";
+            delete p2;
+        }
 
         else if (testCase == 6) // test the array constructor
         {

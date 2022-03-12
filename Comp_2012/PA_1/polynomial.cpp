@@ -10,9 +10,9 @@ Polynomial::Polynomial() // default constructor
     head->exponent = 0;
     head->next = nullptr;
 }
-
 Polynomial::Polynomial(const Polynomial &another) // copy constructor
 {
+   
 }
 Polynomial::Polynomial(int array[], int arraySize) // conversion constructor
 {
