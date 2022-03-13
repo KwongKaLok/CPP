@@ -1,4 +1,4 @@
-CPPFLAGS = -std=c++11
+CPPFLAGS = -std=c++11 
 all: main.exe
 
 main.exe: polynomial.o main.o

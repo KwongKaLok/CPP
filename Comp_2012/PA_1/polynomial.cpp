@@ -12,7 +12,23 @@ Polynomial::Polynomial() // default constructor
 }
 Polynomial::Polynomial(const Polynomial &another) // copy constructor
 {
-   
+    head = new Term;
+    head->coefficient = another.head->coefficient;
+    head->exponent = another.head->exponent;
+    head->next = nullptr;
+    Term *current_node = head;
+    if (another.head->next != nullptr)
+    {
+        for (Term *n = another.head->next; n != nullptr; n = n->next)
+        {
+            Term *n_node = new Term;
+            n_node->coefficient = n->coefficient;
+            n_node->exponent = n->exponent;
+            n_node->next = n->next;
+            current_node->next = n_node;
+            current_node = current_node->next;
+        }
+    }
 }
 Polynomial::Polynomial(int array[], int arraySize) // conversion constructor
 {
@@ -50,7 +66,14 @@ Polynomial::Polynomial(int array[], int arraySize) // conversion constructor
 }
 Polynomial::~Polynomial() // destructor
 {
-    //     cout<<head->coefficient<<"destructor";
+    Term *current = head;
+    Term *next_node = nullptr;
+    while (current != nullptr)
+    {
+        next_node = current->next;
+        delete current;
+        current = next_node;
+    }
 }
 
 void Polynomial::print() const
@@ -137,3 +160,187 @@ void Polynomial::print() const
         }
     }
 }
+
+Polynomial Polynomial::add(const Polynomial &another) const
+{
+    Polynomial temp;
+    Term *current_p1 = head;
+    Term *current_p2 = another.head;
+    Term *current_temp = temp.head;
+
+    while (current_p1->next && current_p2->next)
+    {
+        if (current_p1->exponent > current_p2->exponent)
+        {
+            current_temp->coefficient = current_p1->coefficient;
+            current_temp->exponent = current_p1->exponent;
+            current_p1 = current_p1->next;
+        }
+        else if (current_p1->exponent < current_p2->exponent)
+        {
+            current_temp->coefficient = current_p2->coefficient;
+            current_temp->exponent = current_p2->exponent;
+            current_p2 = current_p2->next;
+        }
+        else
+        {
+            current_temp->exponent = current_p1->exponent;
+            current_temp->coefficient = current_p1->coefficient + current_p2->coefficient;
+            current_p1 = current_p1->next;
+            current_p2 = current_p2->next;
+        }
+        current_temp->next = new Term;
+        current_temp = current_temp->next;
+        current_temp->next = nullptr;
+    }
+    while (current_p1->next || current_p2->next)
+    {
+        if (current_p1->next)
+        {
+            current_temp->exponent = current_p1->exponent;
+            current_temp->coefficient = current_p1->coefficient;
+            current_p1 = current_p1->next;
+        }
+        if (current_p2->next)
+        {
+            current_temp->exponent = current_p2->exponent;
+            current_temp->coefficient = current_p2->coefficient;
+            current_p2 = current_p2->next;
+        }
+        current_temp->next = new Term;
+        current_temp = current_temp->next;
+        current_temp->next = nullptr;
+    }
+    if (current_p1->exponent > current_p2->exponent)
+    {
+        current_temp->exponent = current_p1->exponent;
+        current_temp->coefficient = current_p1->coefficient;
+        current_temp->next = new Term;
+        current_temp = current_temp->next;
+        current_temp->exponent = current_p2->exponent;
+        current_temp->coefficient = current_p2->coefficient;
+        current_temp->next = nullptr;
+    }
+    else if (current_p1->exponent < current_p2->exponent)
+    {
+        current_temp->exponent = current_p2->exponent;
+        current_temp->coefficient = current_p2->coefficient;
+        current_temp->next = new Term;
+        current_temp = current_temp->next;
+        current_temp->exponent = current_p1->exponent;
+        current_temp->coefficient = current_p1->coefficient;
+        current_temp->next = nullptr;
+    }
+    else
+    {
+        current_temp->exponent = current_p1->exponent;
+        current_temp->coefficient = current_p1->coefficient + current_p2->coefficient;
+        current_temp->next = nullptr;
+    }
+
+    return temp;
+}
+Polynomial Polynomial::subtract(const Polynomial &another) const
+{
+    Polynomial temp;
+    Term *current_p1 = head;
+    Term *current_p2 = another.head;
+    Term *current_temp = temp.head;
+
+    while (current_p1->next && current_p2->next)
+    {
+        if (current_p1->exponent > current_p2->exponent)
+        {
+            current_temp->coefficient = current_p1->coefficient;
+            current_temp->exponent = current_p1->exponent;
+            current_p1 = current_p1->next;
+            current_temp->next = new Term;
+            current_temp = current_temp->next;
+            current_temp->next = nullptr;
+        }
+        else if (current_p1->exponent < current_p2->exponent)
+        {
+            current_temp->coefficient = 0 - current_p2->coefficient;
+            current_temp->exponent = current_p2->exponent;
+            current_p2 = current_p2->next;
+            current_temp->next = new Term;
+            current_temp = current_temp->next;
+            current_temp->next = nullptr;
+        }
+        else
+        {
+            int result = current_p1->coefficient - current_p2->coefficient;
+            if (result == 0)
+            {
+                current_p1 = current_p1->next;
+                current_p2 = current_p2->next;
+            }
+            else
+            {
+                current_temp->exponent = current_p1->exponent;
+                current_temp->coefficient = result;
+                current_p1 = current_p1->next;
+                current_p2 = current_p2->next;
+                current_temp->next = new Term;
+                current_temp = current_temp->next;
+                current_temp->next = nullptr;
+            }
+        }
+    }
+    while (current_p1->next || current_p2->next)
+    {
+        if (current_p1->next)
+        {
+            current_temp->exponent = current_p1->exponent;
+            current_temp->coefficient = current_p1->coefficient;
+            current_p1 = current_p1->next;
+        }
+        if (current_p2->next)
+        {
+            current_temp->exponent = current_p2->exponent;
+            current_temp->coefficient = current_p2->coefficient;
+            current_p2 = current_p2->next;
+        }
+        current_temp->next = new Term;
+        current_temp = current_temp->next;
+        current_temp->next = nullptr;
+    }
+    if (current_p1->exponent > current_p2->exponent)
+    {
+        current_temp->exponent = current_p1->exponent;
+        current_temp->coefficient = current_p1->coefficient;
+        current_temp->next = new Term;
+        current_temp = current_temp->next;
+        current_temp->exponent = current_p2->exponent;
+        current_temp->coefficient = current_p2->coefficient;
+        current_temp->next = nullptr;
+    }
+    else if (current_p1->exponent < current_p2->exponent)
+    {
+        current_temp->exponent = current_p2->exponent;
+        current_temp->coefficient = 0 - current_p2->coefficient;
+        current_temp->next = new Term;
+        current_temp = current_temp->next;
+        current_temp->exponent = current_p1->exponent;
+        current_temp->coefficient = current_p1->coefficient;
+        current_temp->next = nullptr;
+    }
+    else
+    {
+        int result = current_p1->coefficient - current_p2->coefficient;
+        if (result == 0)
+        {
+            current_temp = nullptr;
+        }
+        else
+        {
+            current_temp->exponent = current_p1->exponent;
+            current_temp->coefficient = result;
+            current_temp->next = nullptr;
+        }
+    }
+    return temp;
+}
+// Polynomial Polynomial::multiply(const Polynomial &another)const{}
+// int Polynomial::evaluate(int valueOfX)const{return 0;}
+// int Polynomial::compare(const Polynomial &another) const{return 0;}
