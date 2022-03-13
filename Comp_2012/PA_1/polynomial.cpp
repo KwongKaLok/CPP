@@ -68,7 +68,7 @@ Polynomial::~Polynomial() // destructor
 {
     Term *current = head;
     Term *next_node = nullptr;
-    while (current != nullptr)
+    while (current)
     {
         next_node = current->next;
         delete current;
@@ -330,7 +330,13 @@ Polynomial Polynomial::subtract(const Polynomial &another) const
         int result = current_p1->coefficient - current_p2->coefficient;
         if (result == 0)
         {
-            current_temp = nullptr;
+            current_temp = temp.head;
+            while (current_temp->next->next == nullptr)
+            {
+                delete current_temp->next;
+                current_temp->next = nullptr;
+                break;
+            }
         }
         else
         {
@@ -341,6 +347,6 @@ Polynomial Polynomial::subtract(const Polynomial &another) const
     }
     return temp;
 }
-// Polynomial Polynomial::multiply(const Polynomial &another)const{}
-// int Polynomial::evaluate(int valueOfX)const{return 0;}
-// int Polynomial::compare(const Polynomial &another) const{return 0;}
+Polynomial Polynomial::multiply(const Polynomial &another)const{}
+int Polynomial::evaluate(int valueOfX)const{return 0;}
+int Polynomial::compare(const Polynomial &another) const{return 0;}
