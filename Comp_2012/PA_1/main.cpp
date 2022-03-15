@@ -253,78 +253,78 @@ int main()
             delete p2;
         }
 
-        // else if(testCase == 18) //test evaluate
-        // {
-        //     Polynomial* p1 = new Polynomial(1);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     cout << "\np1(2): ";
-        //     cout << p1->evaluate(2);
-        //     delete p1;
-        // }
-        // else if(testCase == 19) //test evaluate
-        // {
-        //     Polynomial* p1 = new Polynomial(8);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     cout << "\np1(2): ";
-        //     cout << p1->evaluate(2);
-        //     delete p1;
-        // }
+        else if(testCase == 18) //test evaluate
+        {
+            Polynomial* p1 = new Polynomial(1);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            cout << "\np1(2): ";
+            cout << p1->evaluate(2);
+            delete p1;
+        }
+        else if(testCase == 19) //test evaluate
+        {
+            Polynomial* p1 = new Polynomial(8);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            cout << "\np1(2): ";
+            cout << p1->evaluate(2);
+            delete p1;
+        }
 
-        // else if(testCase == 20) //test compare
-        // {
-        //     Polynomial* p1 = new Polynomial(1);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     Polynomial* p2 = new Polynomial(2);
-        //     cout << "\np2: \"";
-        //     p2->print();
-        //     cout << "\"";
-        //     cout << "\ncompare p1 and p2: ";
-        //     cout << p1->compare(*p2);
-        //     cout << "\ncompare p2 and p1: ";
-        //     cout << p2->compare(*p1);
-        //     delete p1;
-        //     delete p2;
-        // }
-        // else if(testCase == 21) //test compare
-        // {
-        //     Polynomial* p1 = new Polynomial(3);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     Polynomial* p2 = new Polynomial(4);
-        //     cout << "\np2: \"";
-        //     p2->print();
-        //     cout << "\"";
-        //     cout << "\ncompare p1 and p2: ";
-        //     cout << p1->compare(*p2);
-        //     cout << "\ncompare p2 and p1: ";
-        //     cout << p2->compare(*p1);
-        //     delete p1;
-        //     delete p2;
-        // }
-        // else if(testCase == 22) //test compare
-        // {
-        //     Polynomial* p1 = new Polynomial(5);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     Polynomial* p2 = new Polynomial(5);
-        //     cout << "\np2: \"";
-        //     p2->print();
-        //     cout << "\"";
-        //     cout << "\ncompare p1 and p2: ";
-        //     cout << p1->compare(*p2);
-        //     cout << "\ncompare p2 and p1: ";
-        //     cout << p2->compare(*p1);
-        //     delete p1;
-        //     delete p2;
-        // }
+        else if(testCase == 20) //test compare
+        {
+            Polynomial* p1 = new Polynomial(1);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            Polynomial* p2 = new Polynomial(2);
+            cout << "\np2: \"";
+            p2->print();
+            cout << "\"";
+            cout << "\ncompare p1 and p2: ";
+            cout << p1->compare(*p2);
+            cout << "\ncompare p2 and p1: ";
+            cout << p2->compare(*p1);
+            delete p1;
+            delete p2;
+        }
+        else if(testCase == 21) //test compare
+        {
+            Polynomial* p1 = new Polynomial(3);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            Polynomial* p2 = new Polynomial(4);
+            cout << "\np2: \"";
+            p2->print();
+            cout << "\"";
+            cout << "\ncompare p1 and p2: ";
+            cout << p1->compare(*p2);
+            cout << "\ncompare p2 and p1: ";
+            cout << p2->compare(*p1);
+            delete p1;
+            delete p2;
+        }
+        else if(testCase == 22) //test compare
+        {
+            Polynomial* p1 = new Polynomial(5);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            Polynomial* p2 = new Polynomial(5);
+            cout << "\np2: \"";
+            p2->print();
+            cout << "\"";
+            cout << "\ncompare p1 and p2: ";
+            cout << p1->compare(*p2);
+            cout << "\ncompare p2 and p1: ";
+            cout << p2->compare(*p1);
+            delete p1;
+            delete p2;
+        }
 
         cout << endl
              << "===================================" << endl;

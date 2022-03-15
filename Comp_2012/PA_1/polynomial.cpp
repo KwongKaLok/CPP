@@ -419,10 +419,72 @@ Polynomial Polynomial::multiply(const Polynomial &another) const
 }
 int Polynomial::evaluate(int valueOfX) const
 {
-    return 0;
+    int power{1};
+    int result{0};
+    Term *current_node = head;
+
+    while (current_node)
+    {
+        for (int i = 0; i < current_node->exponent; i++)
+            power *= valueOfX;
+        result += current_node->coefficient * power;
+        power = 1;
+        current_node = current_node->next;
+    }
+    return result;
 }
 int Polynomial::compare(const Polynomial &another) const
 {
-    return 0;
+    int result;
+    Term *current_p1 = head;
+    Term *current_p2 = another.head;
+    while (true)
+    {
+        if (current_p1->exponent > current_p2->exponent)
+        {
+            result = 1;
+            return result;
+        }
+        else if (current_p1->exponent < current_p2->exponent)
+        {
+            result = -1;
+            return result;
+        }
+        else
+        {
+            if (current_p1->coefficient > current_p2->coefficient)
+            {
+                result = 1;
+                return result;
+            }
+
+            else if (current_p1->coefficient < current_p2->coefficient)
+            {
+                result = -1;
+                return result;
+            }
+            else
+            {
+                current_p1 = current_p1->next;
+                current_p2 = current_p2->next;
+                if (current_p1 == nullptr && current_p2 != nullptr)
+                {
+                    result = 1;
+                    return result;
+                }
+                else if (current_p1 != nullptr && current_p2 == nullptr)
+                {
+                    result = -1;
+                    return result;
+                }
+                else if (current_p1 == nullptr && current_p2 == nullptr)
+                {
+                    result = 0;
+                    return result;
+                }
+            }
+        }
+    }
+
+    return result;
 }
-    
