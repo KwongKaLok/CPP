@@ -347,6 +347,82 @@ Polynomial Polynomial::subtract(const Polynomial &another) const
     }
     return temp;
 }
-Polynomial Polynomial::multiply(const Polynomial &another)const{}
-int Polynomial::evaluate(int valueOfX)const{return 0;}
-int Polynomial::compare(const Polynomial &another) const{return 0;}
+Polynomial Polynomial::multiply(const Polynomial &another) const
+{
+    Polynomial temp;
+    Term *current_p1 = head;
+    Term *current_p2 = another.head;
+    Term *current_temp = temp.head;
+
+    current_temp->coefficient = current_p1->coefficient * current_p2->coefficient;
+    current_temp->exponent = current_p1->exponent + current_p2->exponent;
+    current_temp->next = nullptr;
+    current_p2 = current_p2->next;
+    while (current_p1)
+    {
+        while (current_p2)
+        {
+            current_temp->next = new Term;
+            current_temp = current_temp->next;
+            current_temp->coefficient = current_p1->coefficient * current_p2->coefficient;
+            current_temp->exponent = current_p1->exponent + current_p2->exponent;
+            current_temp->next = nullptr;
+            current_p2 = current_p2->next;
+        }
+        current_p2 = another.head;
+        current_p1 = current_p1->next;
+    }
+
+    current_p1 = temp.head;
+
+    Term *temp_node = nullptr;
+    while (current_p1 && current_p1->next)
+    {
+        current_p2 = current_p1;
+        while (current_p2->next)
+        {
+            if (current_p1->exponent == current_p2->next->exponent)
+            {
+                current_p1->coefficient = current_p1->coefficient + current_p2->next->coefficient;
+                temp_node = current_p2->next;
+                current_p2->next = current_p2->next->next;
+                delete temp_node;
+            }
+            else
+                current_p2 = current_p2->next;
+        }
+        current_p1 = current_p1->next;
+    }
+    current_p1 = temp.head;
+    int temp_coe, temp_exp;
+    temp_node = nullptr;
+    while (current_p1->next)
+    {
+        current_p2 = current_p1;
+        while (current_p2->next)
+        {
+            if (current_p1->exponent < current_p2->exponent)
+            {
+                temp_coe = current_p1->coefficient;
+                temp_exp = current_p1->exponent;
+                current_p1->coefficient = current_p2->coefficient;
+                current_p1->exponent = current_p2->exponent;
+                current_p2->coefficient = temp_coe;
+                current_p2->exponent = temp_exp;
+            }
+            current_p2 = current_p2->next;
+        }
+        current_p1 = current_p1->next;
+    }
+
+    return temp;
+}
+int Polynomial::evaluate(int valueOfX) const
+{
+    return 0;
+}
+int Polynomial::compare(const Polynomial &another) const
+{
+    return 0;
+}
+    

@@ -201,57 +201,57 @@ int main()
             delete p2;
         }
 
-        // else if(testCase == 15) //test multiply
-        // {
-        //     Polynomial* p1 = new Polynomial(1);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     Polynomial* p2 = new Polynomial(2);
-        //     cout << "\np2: \"";
-        //     p2->print();
-        //     cout << "\"";
-        //     Polynomial p3 = p1->multiply(*p2);
-        //     cout << "\np1*p2: \"";
-        //     p3.print();
-        //     cout << "\"";
-        //     delete p1;
-        //     delete p2;
-        // }
-        // else if(testCase == 16) //test multiply
-        // {
-        //     Polynomial* p1 = new Polynomial(3);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     Polynomial* p2 = new Polynomial(4);
-        //     cout << "\np2: \"";
-        //     p2->print();
-        //     cout << "\"";
-        //     Polynomial p3 = p1->multiply(*p2);
-        //     cout << "\np1*p2: \"";
-        //     p3.print();
-        //     cout << "\"";
-        //     delete p1;
-        //     delete p2;
-        // }
-        // else if(testCase == 17) //test multiply
-        // {
-        //     Polynomial* p1 = new Polynomial(1);
-        //     cout << "p1: \"";
-        //     p1->print();
-        //     cout << "\"";
-        //     Polynomial* p2 = new Polynomial(5);
-        //     cout << "\np2: \"";
-        //     p2->print();
-        //     cout << "\"";
-        //     Polynomial p3 = p1->multiply(*p2);
-        //     cout << "\np1*p2: \"";
-        //     p3.print();
-        //     cout << "\"";
-        //     delete p1;
-        //     delete p2;
-        // }
+        else if(testCase == 15) //test multiply
+        {
+            Polynomial* p1 = new Polynomial(1);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            Polynomial* p2 = new Polynomial(2);
+            cout << "\np2: \"";
+            p2->print();
+            cout << "\"";
+            Polynomial p3 = p1->multiply(*p2);
+            cout << "\np1*p2: \"";
+            p3.print();
+            cout << "\"";
+            delete p1;
+            delete p2;
+        }
+        else if(testCase == 16) //test multiply
+        {
+            Polynomial* p1 = new Polynomial(3);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            Polynomial* p2 = new Polynomial(4);
+            cout << "\np2: \"";
+            p2->print();
+            cout << "\"";
+            Polynomial p3 = p1->multiply(*p2);
+            cout << "\np1*p2: \"";
+            p3.print();
+            cout << "\"";
+            delete p1;
+            delete p2;
+        }
+        else if(testCase == 17) //test multiply
+        {
+            Polynomial* p1 = new Polynomial(1);
+            cout << "p1: \"";
+            p1->print();
+            cout << "\"";
+            Polynomial* p2 = new Polynomial(5);
+            cout << "\np2: \"";
+            p2->print();
+            cout << "\"";
+            Polynomial p3 = p1->multiply(*p2);
+            cout << "\np1*p2: \"";
+            p3.print();
+            cout << "\"";
+            delete p1;
+            delete p2;
+        }
 
         // else if(testCase == 18) //test evaluate
         // {
