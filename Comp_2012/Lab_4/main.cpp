@@ -41,7 +41,7 @@ int main()
     truck.leave(parking_lot);
     bus.print();
     truck.print();
-    parking_lot->print();
-    
+    parking_lot->print();    
+
     return 0;
 }
