@@ -5,7 +5,7 @@ using namespace std;
 
 Employee::Employee() {}
 
-Employee::Employee(int id, const string& name, char gender, const Date& entry_date, string post, Department dept)
+Employee::Employee(int id, const string &name, char gender, const Date &entry_date, string post, Department dept)
     : id(id), name(name), gender(gender), entry_date(entry_date), post(post), dept(dept){};
 
 Employee::~Employee()
@@ -17,7 +17,6 @@ void Employee::print_salary() const
 {
     cout << name << " : $" << salary << endl;
 }
-
 
 string enum_to_str(Department department)
 {

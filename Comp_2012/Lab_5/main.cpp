@@ -6,7 +6,6 @@
 #include <string>
 using namespace std;
 
-
 int main()
 {
     Manager *pm1 = new Manager(101, "Bruce Wayne", 'M', Date{2016, 05, 10}, HumanResource);
@@ -17,7 +16,7 @@ int main()
     Employee *pe2 = pt1;
     pe2->print_description();
     pm1->manage(pt1);
-    
+
     TechnicianLeader *ptl1 = new TechnicianLeader(103, "Tony Stark", 'M', Date{2018, 07, 10}, 2, FrontEnd);
     Employee *pe3 = ptl1;
     pe3->print_description();
@@ -34,7 +33,7 @@ int main()
     pm1->manage(ptl2);
 
     pm1->print_staff();
-    
+
     pe1->calculate_salary();
     pe1->print_salary();
 
