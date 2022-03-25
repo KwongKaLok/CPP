@@ -13,33 +13,72 @@ SigType Signature::GetType() const
         throw invalid_argument("Signature Type does not exist!");
 }
 
-//Todo: Constructors/Destructors
+// Todo: Constructors/Destructors
+Signature::Signature() {}
+
+SchnorrSignature::SchnorrSignature(const Number *s, const Number *e) : s(s), e(e) {}
+
+DSASignature::DSASignature(const Number *r, const Number *s) : r(r), s(s) {}
+
+PublicKey::PublicKey() {}
+
+SchnorrPublicKey::SchnorrPublicKey(const Number *y) : y(y) {}
+
+DSAPublicKey::DSAPublicKey(const Number *y) : y(y) {}
+
+SecretKey::SecretKey() {}
+
+SchnorrSecretKey::SchnorrSecretKey(const Number *x) : x(x) {}
+
+DSASecretKey::DSASecretKey(const Number *x) : x(x) {}
+
+Signature::~Signature() {}
+
+SchnorrSignature::~SchnorrSignature()
+{
+    cout << "Destruct SchnorrSignature..." << endl;
+}
+DSASignature::~DSASignature()
+{
+    cout << "Destruct DSASignature..." << endl;
+}
+SchnorrPublicKey::~SchnorrPublicKey()
+{
+    cout << "Destruct SchnorrPublicKey..." << endl;
+}
+DSAPublicKey::~DSAPublicKey()
+{
+    cout << "Destruct DSAPublicKey..." << endl;
+}
+SchnorrSecretKey::~SchnorrSecretKey()
+{
+    cout << "Destruct SchnorrSecretKey..." << endl;
+}
+DSASecretKey::~DSASecretKey()
+{
+    cout << "Destruct DSASecretKey..." << endl;
+}
 
 bool SchnorrPublicKey::Verify(const string &message, const Signature &signature) const
 {
-    //Todo
+    // Todo
 
     return true;
 }
-
 
 bool DSAPublicKey::Verify(const string &message, const Signature &signature) const
 {
-    //Todo
-    
+    // Todo
+
     return true;
 }
 
-
-
 const Signature *SchnorrSecretKey::Sign(const string &message) const
 {
-    //Todo
+    // Todo
 
     return nullptr;
 }
-
-
 
 const Signature *DSASecretKey::Sign(const string &message) const
 {
@@ -64,14 +103,14 @@ SigPair::SigPair(const PublicKey *publicKey, const SecretKey *secretKey)
 
 SigPair::~SigPair()
 {
-    cout << "Destruct SigPair..."<<endl;
+    cout << "Destruct SigPair..." << endl;
     delete publicKey;
     delete secretKey;
 }
 
 const SigPair *GenerateKey(SigType sigType, const string &info)
 {
-    if (sigType == DSA )
+    if (sigType == DSA)
     {
         Number x = Number::Rand(Number(1), *Number::Q);
         Number y = Number::Pow(*Number::G, x, *Number::P);
@@ -85,13 +124,13 @@ const SigPair *GenerateKey(SigType sigType, const string &info)
 
         return sigPair;
     }
-    else if (sigType == Schnorr )
+    else if (sigType == Schnorr)
     {
-        //Todo
+        // Todo
 
         return nullptr;
     }
-        return nullptr;
+    return nullptr;
 }
 
 vector<SigType> SigTypes()

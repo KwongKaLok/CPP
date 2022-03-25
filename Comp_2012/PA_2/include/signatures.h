@@ -18,8 +18,8 @@ class Signature
 public:
     // Todo
     Signature();
-    SigType GetType() const;
-    virtual void Print();
+    SigType GetType() const = 0;
+    virtual void Print() = 0;
     virtual ~Signature();
 };
 
