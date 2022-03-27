@@ -22,62 +22,136 @@ DSASignature::DSASignature(const Number *r, const Number *s) : r(r), s(s) {}
 
 PublicKey::PublicKey() {}
 
-SchnorrPublicKey::SchnorrPublicKey(const Number *y) : y(y) {}
-
 DSAPublicKey::DSAPublicKey(const Number *y) : y(y) {}
 
 SecretKey::SecretKey() {}
 
 SchnorrSecretKey::SchnorrSecretKey(const Number *x) : x(x) {}
 
-DSASecretKey::DSASecretKey(const Number *x) : x(x) {}
-
 Signature::~Signature() {}
+
+PublicKey::~PublicKey() {}
+
+SecretKey::~SecretKey() {}
 
 SchnorrSignature::~SchnorrSignature()
 {
     cout << "Destruct SchnorrSignature..." << endl;
+    delete s;
+    delete e;
 }
 DSASignature::~DSASignature()
 {
     cout << "Destruct DSASignature..." << endl;
+    delete r;
+    delete s;
 }
 SchnorrPublicKey::~SchnorrPublicKey()
 {
     cout << "Destruct SchnorrPublicKey..." << endl;
+    delete y;
 }
 DSAPublicKey::~DSAPublicKey()
 {
     cout << "Destruct DSAPublicKey..." << endl;
+    delete y;
 }
 SchnorrSecretKey::~SchnorrSecretKey()
 {
     cout << "Destruct SchnorrSecretKey..." << endl;
+    delete x;
 }
 DSASecretKey::~DSASecretKey()
 {
     cout << "Destruct DSASecretKey..." << endl;
+    delete x;
 }
 
 bool SchnorrPublicKey::Verify(const string &message, const Signature &signature) const
 {
     // Todo
+    if (signature.GetType() == Schnorr)
+    {
+        const SchnorrSignature *SCHsig = dynamic_cast<const SchnorrSignature *>(&signature);
+        Number s = *SCHsig->s;
+        Number e = *SCHsig->e;
+        Number q = *Number::Q;
+        Number g = *Number::G;
+        Number p = *Number::P;
+        Number y = *SchnorrPublicKey::y;
 
-    return true;
+        if (Number::NSign(s) != 1) // check s is non-zero and positive
+            return false;
+        if (Number::NSign(e) != 1) // check e is non-zero and positive
+            return false;
+        if (Number::NSign(Number::Sub(q, s)) != 1) // check s < q
+            return false;
+        if (Number::NSign(Number::Sub(q, e)) != 1) // check e < q
+            return false;
+
+        Number rv = Number::Mul_Mod(Number::Pow(g, s, p), Number::Pow(y, e, p), p);
+        Number ev = Number::Mod(Number::Hash(rv, message), q);
+        if (Number::NSign(Number::Sub(ev, e)) == 0)
+            return true;
+        else
+            return false;
+    }
+    else
+        return false;
 }
 
 bool DSAPublicKey::Verify(const string &message, const Signature &signature) const
 {
     // Todo
+    if (signature.GetType() == DSA)
+    {
+        const DSASignature *DSAsig = dynamic_cast<const DSASignature *>(&signature);
+        Number s = *DSAsig->s;
+        Number r = *DSAsig->r;
+        Number q = *Number::Q;
+        Number g = *Number::G;
+        Number p = *Number::P;
+        Number y = *DSAPublicKey::y;
 
-    return true;
+        if (Number::NSign(r) != 1) // check r is non-zero and positive
+            return false;
+        if (Number::NSign(s) != 1) // check s is non-zero and positive
+            return false;
+        if (Number::NSign(Number::Sub(q, r)) != 1) // check r < q
+            return false;
+        if (Number::NSign(Number::Sub(q, s)) != 1) // check s < q
+            return false;
+
+        Number w = Number::Inv(s, q);
+        Number z = Number::Hash(message);
+        Number u1 = Number::Mul_Mod(z, w, q);
+        Number u2 = Number::Mul_Mod(r, w, q);
+        Number result1 = Number::Pow(g, u1, p);
+        Number result2 = Number::Pow(y, u2, p);
+        Number result = Number::Mul_Mod(result1, result2, p);
+        result = Number::Mod(result, q);
+        if (Number::NSign(Number::Sub(result, r)) == 0)
+            return true;
+        else
+            return false;
+    }
+    else
+        return false;
 }
 
 const Signature *SchnorrSecretKey::Sign(const string &message) const
 {
     // Todo
+    while (true)
+    {
+        Number k = Number::Rand(1, *Number::Q);
+        Number r = Number::Pow(*Number::G, k, *Number::P);
+        Number e = Number::Mod(Number::Hash(r, message), *Number::Q);
+        Number s = Number::Mod(Number::Sub(Number::Mod(k, *Number::Q), Number::Mul_Mod(*(this->x), e, *Number::Q)), *Number::Q);
 
-    return nullptr;
+        if (Number::NSign(s) > 0 && Number::NSign(e) > 0)
+            return new SchnorrSignature(new Number(s), new Number(e));
+    }
 }
 
 const Signature *DSASecretKey::Sign(const string &message) const
@@ -96,10 +170,7 @@ const Signature *DSASecretKey::Sign(const string &message) const
     }
 }
 
-SigPair::SigPair(const PublicKey *publicKey, const SecretKey *secretKey)
-    : publicKey(publicKey), secretKey(secretKey)
-{
-}
+SigPair::SigPair(const PublicKey *publicKey, const SecretKey *secretKey) : publicKey(publicKey), secretKey(secretKey) {}
 
 SigPair::~SigPair()
 {
@@ -126,9 +197,17 @@ const SigPair *GenerateKey(SigType sigType, const string &info)
     }
     else if (sigType == Schnorr)
     {
-        // Todo
+        Number x = Number::Rand(Number(1), *Number::Q);
+        Number y = Number::Pow(*Number::G, x, *Number::P);
+        const Number *newX = new Number(x);
+        const Number *newY = new Number(y);
 
-        return nullptr;
+        SchnorrSecretKey *sk = new SchnorrSecretKey(newX);
+        SchnorrPublicKey *pk = new SchnorrPublicKey(newY);
+
+        SigPair *sigPair = new SigPair(pk, sk);
+
+        return sigPair;
     }
     return nullptr;
 }

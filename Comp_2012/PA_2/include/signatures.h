@@ -18,16 +18,16 @@ class Signature
 public:
     // Todo
     Signature();
-    SigType GetType() const = 0;
-    virtual void Print() = 0;
-    virtual ~Signature();
+    SigType GetType() const;
+    virtual void Print() const = 0;
+    virtual ~Signature() = 0;
 };
 
 class SchnorrSignature : public Signature
 {
 public:
     // Todo
-    SchnorrSignature(const Number *s, const Number *e) : s(s), e(e) {}
+    SchnorrSignature(const Number *, const Number *);
     void Print() const
     {
         cout << "s=";
@@ -36,7 +36,7 @@ public:
         e->Print();
         cout << endl;
     }
-    virtual ~SchnorrSignature();
+    ~SchnorrSignature();
     const Number *s;
     const Number *e;
 };
@@ -45,7 +45,7 @@ class DSASignature : public Signature
 {
 public:
     // Todo
-    DSASignature(const Number *r, const Number *s) : r(r), s(s) {}
+    DSASignature(const Number *, const Number *);
     void Print() const
     {
         cout << "r=";
@@ -54,7 +54,7 @@ public:
         s->Print();
         cout << endl;
     }
-    virtual ~DSASignature();
+    ~DSASignature();
     const Number *r;
     const Number *s;
 };
@@ -64,8 +64,8 @@ class PublicKey
 public:
     PublicKey();
     virtual ~PublicKey();
-    bool Verify(const string &message, const Signature &signature) const;
-    virtual void Print();
+    virtual bool Verify(const string &, const Signature &) const = 0;
+    virtual void Print() const = 0;
 };
 
 class SchnorrPublicKey : public PublicKey
@@ -87,9 +87,9 @@ class DSAPublicKey : public PublicKey
 {
 public:
     const Number *y;
-    DSAPublicKey(const Number *y) : y(y) {}
-    virtual ~DSAPublicKey();
-    bool Verify(const string &message, const Signature &signature) const;
+    DSAPublicKey(const Number *);
+    ~DSAPublicKey();
+    bool Verify(const string &, const Signature &) const;
     void Print() const
     {
         cout << "DSA Public Key is: ";
@@ -103,17 +103,17 @@ class SecretKey
 public:
     SecretKey();
     virtual ~SecretKey();
-    const Signature *Sign(const string &message) const;
-    virtual void Print();
+    virtual const Signature *Sign(const string &) const = 0;
+    virtual void Print() const = 0;
 };
 
 class SchnorrSecretKey : public SecretKey
 {
 public:
     const Number *x;
-    SchnorrSecretKey(const Number *x) : x(x) {}
+    SchnorrSecretKey(const Number *);
     ~SchnorrSecretKey();
-    const Signature *Sign(const string &message) const;
+    const Signature *Sign(const string &) const;
     void Print() const
     {
         cout << "Schnorr Secret Key is: ";
