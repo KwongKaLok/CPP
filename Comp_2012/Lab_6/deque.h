@@ -173,7 +173,7 @@ public:
         BiLNode<T> *Aptr = A.head;
         for (int i = 0; i < A.size; i++)
         {
-            temp->push_back(Aptr);
+            temp->push_back(Aptr->data);
             Aptr = Aptr->next;
         }
         return (*temp);
@@ -193,7 +193,8 @@ public:
                 out << "<-->";
             }
         }
-        out << "]" return out;
+        out << "]";
+        return out;
     }
 };
 
