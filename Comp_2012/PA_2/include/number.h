@@ -36,7 +36,16 @@ public:
 
     static Number Mod(const Number &n, const Number &p)
     {
+        if (Number::NSign(p) <= 0)
+        {
+            throw invalid_argument("Mod P should be > 0 :" + p.ToString(INTBASE_));
+        }
         int64_t res = n.m_dat % p.m_dat;
+    
+        if (res<0) 
+        {
+            res += p.m_dat;
+        }
         return Number(res);
     }
 
