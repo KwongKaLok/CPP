@@ -33,14 +33,19 @@ class Issuer : public IssuerBase {
         virtual CertificateBase* SellBond(int amount) {
         //TODO:
             //1. Decrease numOfBond_
+            numOfBond_-=amount;
             //2. Calculate the face value of certificate (face value = (1 + interest rate) * amount)
+            double face_v = (1+ Certificate<bondType>::interestRate_)*amount;            
             //3. Create and return a certificate to user
+            Certificate<bondType>* temp_cert = new Certificate<bondType>(face_v, this);
+            return temp_cert;
         //* You can always assume numOfBond_ is greater than amount 
         }
 
         void SetRateAndPeriod(double rate, int year) const {
         //TODO:
             //1. Wrapper of SetRateAndPeriod in Certificate class
+            Certificate<bondType>::SetRateAndPeriod(rate,year);
         }
 
         virtual void Settlement(Certificate<bondType>* Certificate) const {
