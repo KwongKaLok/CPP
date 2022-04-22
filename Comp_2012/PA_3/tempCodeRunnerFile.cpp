@@ -1,0 +1,1 @@
+SmartPtr<Node<int>> n {new_node(0)};
