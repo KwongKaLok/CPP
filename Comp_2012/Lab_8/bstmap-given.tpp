@@ -40,8 +40,7 @@ bool BSTMap<K, V>::contains(const K& x) const {
 template <typename K, typename V>
 void BSTMap<K, V>::remove(const K& x) {
     if (is_empty())             // Item is not found; do nothing
-        return;
-    
+        return; 
     if (x < root->data.key)        // Remove from the left subtree
         root->left.remove(x);
     else if (x > root->data.key)   // Remove from the right subtree

@@ -71,6 +71,7 @@
         "map": "cpp",
         "set": "cpp",
         "__tree": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "list": "cpp"
     }
 }
