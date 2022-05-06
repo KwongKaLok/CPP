@@ -5,75 +5,76 @@
 
 using namespace std;
 
-int (*stringLength)(string, int) = [](string s, int m) { return (int)s.length() % m; };
+int (*stringLength)(string, int) = [](string s, int m)
+{ return (int)s.length() % m; };
 int (*stringHash)(string, int) = [](string s, int m)
-    {
-        //this is an implementation of the hash function seen on p.29 of the hashing lecture notes
-        //we are not going to explain it for you
-        //consider understanding it part of your task
-        //but note that it ignores letter cases intentionally, and assumes input consists of English characters only
-        //we also assume the input string won't cause overflow for this function for all test cases
-        //it should work for any string with no more than 6 characters
-        int r=0;
-        for(unsigned int i=0;i<s.length();i++)
-            r = (s[i] - ((s[i]>='a')?'a':'A') + 1) + r*37;
-        return r % m;
-    };
-
-//a convenient helper function to print various statistics
-void printStats(HashTable* hashTable, bool activeCellCount, bool comparisonCount, bool clusterCount, bool largestClusterSize, bool clusterSizeList)
 {
-    if(activeCellCount)
+    // this is an implementation of the hash function seen on p.29 of the hashing lecture notes
+    // we are not going to explain it for you
+    // consider understanding it part of your task
+    // but note that it ignores letter cases intentionally, and assumes input consists of English characters only
+    // we also assume the input string won't cause overflow for this function for all test cases
+    // it should work for any string with no more than 6 characters
+    int r = 0;
+    for (unsigned int i = 0; i < s.length(); i++)
+        r = (s[i] - ((s[i] >= 'a') ? 'a' : 'A') + 1) + r * 37;
+    return r % m;
+};
+
+// a convenient helper function to print various statistics
+void printStats(HashTable *hashTable, bool activeCellCount, bool comparisonCount, bool clusterCount, bool largestClusterSize, bool clusterSizeList)
+{
+    if (activeCellCount)
         cout << "Active cell count = " << hashTable->getActiveCellCount() << endl;
-    if(comparisonCount)
+    if (comparisonCount)
         cout << "Accumulated comparison count = " << hashTable->getAccumulatedComparisonCount() << endl;
-    if(clusterCount)
+    if (clusterCount)
         cout << "Cluster count = " << hashTable->getClusterCount() << endl;
-    if(largestClusterSize)
+    if (largestClusterSize)
         cout << "Largest cluster size = " << hashTable->getLargestClusterSize() << endl;
-    if(clusterSizeList)
-        cout << "Cluster size list = " <<  hashTable->getClusterSizeSortedList() << endl;
+    if (clusterSizeList)
+        cout << "Cluster size list = " << hashTable->getClusterSizeSortedList() << endl;
 }
 
-//a function to generate test cases for various tables; to be used in main()
+// a function to generate test cases for various tables; to be used in main()
 void testCaseForTable(int tableNumber, int subCase)
 {
     cout << "This is for table " << tableNumber << " sub-case " << subCase << endl;
 
-    HashTable* hashTable;
-    if(tableNumber <= 3 || tableNumber == 8)
+    HashTable *hashTable;
+    if (tableNumber <= 3 || tableNumber == 8)
         hashTable = new LinearProbingHashTable(3, stringLength);
-    else if(tableNumber == 4 || tableNumber == 7)
+    else if (tableNumber == 4 || tableNumber == 7)
         hashTable = new DoubleHashingHashTable(3, stringLength, stringHash);
-    else if(tableNumber == 5)
+    else if (tableNumber == 5)
         hashTable = new LinearProbingHashTable(7, stringLength);
-    else if(tableNumber == 6)
+    else if (tableNumber == 6)
         hashTable = new QuadraticProbingHashTable(3, stringLength);
 
-    if(subCase == 0)
+    if (subCase == 0)
         hashTable->togglePrintSteps();
 
-    if(tableNumber == 1) //test an empty table
+    if (tableNumber == 1) // test an empty table
     {
     }
-    else if(tableNumber == 2) //test a table with two items at the beginning of the table
+    else if (tableNumber == 2) // test a table with two items at the beginning of the table
     {
         cout << "Add: " << hashTable->add(new Magic{"Fire", "A", 100, 10}) << endl;
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Cow", 300, 30}) << endl;
     }
-    else if(tableNumber == 3) //test with a table "0: [Empty] | 1: [Deleted] | 2: [Empty]"
+    else if (tableNumber == 3) // test with a table "0: [Empty] | 1: [Deleted] | 2: [Empty]"
     {
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Ball", 100, 10}) << endl;
         cout << "Remove: " << hashTable->remove("Ball") << endl;
     }
-    else if(tableNumber == 4) //test failed add
+    else if (tableNumber == 4) // test failed add
     {
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Fff", 100, 10}) << endl;
-        Magic* magicThatCannotBeAdded = new Magic{"Fire", "Lll", 300, 30};
+        Magic *magicThatCannotBeAdded = new Magic{"Fire", "Lll", 300, 30};
         cout << "Add: " << hashTable->add(magicThatCannotBeAdded) << endl;
         delete magicThatCannotBeAdded;
     }
-    else if(tableNumber == 5) //test adding back to a deleted cell
+    else if (tableNumber == 5) // test adding back to a deleted cell
     {
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Ball", 100, 10}) << endl;
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Wind", 200, 20}) << endl;
@@ -82,7 +83,7 @@ void testCaseForTable(int tableNumber, int subCase)
         cout << "Remove: " << hashTable->remove("Rain") << endl;
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Doge", 999, 99}) << endl;
     }
-    else if(tableNumber == 6) //test QuadraticProbingHashTable
+    else if (tableNumber == 6) // test QuadraticProbingHashTable
     {
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Ball", 400, 10}) << endl;
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Cow", 300, 20}) << endl;
@@ -90,10 +91,10 @@ void testCaseForTable(int tableNumber, int subCase)
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Duck", 100, 40}) << endl;
         cout << "Remove: " << hashTable->remove("Void") << endl;
         cout << "Remove: " << hashTable->remove("Duck") << endl;
-        Magic* magic = hashTable->get("Void");
-        cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+        Magic *magic = hashTable->get("Void");
+        cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
     }
-    else if(tableNumber == 7) //test DoubleHashingHashTable
+    else if (tableNumber == 7) // test DoubleHashingHashTable
     {
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Ball", 100, 40}) << endl;
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Cow", 200, 30}) << endl;
@@ -101,28 +102,28 @@ void testCaseForTable(int tableNumber, int subCase)
         cout << "Add: " << hashTable->add(new Magic{"Fire", "Rock", 400, 10}) << endl;
         cout << "Remove: " << hashTable->remove("Void") << endl;
         cout << "Remove: " << hashTable->remove("Rock") << endl;
-        Magic* magic = hashTable->get("Ant");
-        cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+        Magic *magic = hashTable->get("Ant");
+        cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
     }
-    else if(tableNumber == 8) //test rehashing multiple times
+    else if (tableNumber == 8) // test rehashing multiple times
     {
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
-            string ballString = "Ball" + string(1, (char)(i+'a'));
+            string ballString = "Ball" + string(1, (char)(i + 'a'));
             cout << "Add: " << hashTable->add(new Magic{"Fire", ballString, 100, 10}) << endl;
         }
     }
 
     hashTable->print();
-    if(subCase == 1)
+    if (subCase == 1)
         printStats(hashTable, true, false, false, false, false);
-    else if(subCase == 2)
+    else if (subCase == 2)
         printStats(hashTable, false, true, false, false, false);
-    else if(subCase == 3)
+    else if (subCase == 3)
         printStats(hashTable, false, false, true, false, false);
-    else if(subCase == 4)
+    else if (subCase == 4)
         printStats(hashTable, false, false, false, true, false);
-    else if(subCase == 5)
+    else if (subCase == 5)
         printStats(hashTable, false, false, false, false, true);
 
     delete hashTable;
@@ -130,27 +131,28 @@ void testCaseForTable(int tableNumber, int subCase)
 
 int main()
 {
-    cout << boolalpha; //to print true/false instead of 1/0
+    cout << boolalpha; // to print true/false instead of 1/0
 
     cout << "Hi, computer wizard! Which test case do you want to run?" << endl;
     int testCase;
     cin >> testCase;
-    
+
     // for(testCase=1;testCase<=67;testCase++)
     {
-        cout << endl << "Test case " << testCase << ":" << endl;
+        cout << endl
+             << "Test case " << testCase << ":" << endl;
         cout << "=============================================" << endl;
 
-        if(testCase == 1) //example code used in "Hashing example" with possibly some additional output
+        if (testCase == 1) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->print();
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 2) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 2) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             bool returnValue = hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             cout << "Last function call returned " << returnValue << endl;
@@ -158,9 +160,9 @@ int main()
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 3) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 3) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             bool returnValue = hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -169,9 +171,9 @@ int main()
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 4) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 4) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -181,9 +183,9 @@ int main()
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 5) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 5) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -194,9 +196,9 @@ int main()
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 6) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 6) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -208,9 +210,9 @@ int main()
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 7) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 7) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -223,9 +225,9 @@ int main()
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 8) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 8) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -233,15 +235,15 @@ int main()
             hashTable->add(new Magic{"Fire", "Ox", 400, 40});
             hashTable->remove("Void");
             hashTable->remove("Ball");
-            Magic* magic = hashTable->get("Void");
-            cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+            Magic *magic = hashTable->get("Void");
+            cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
             hashTable->print();
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
-        else if(testCase == 9) //example code used in "Hashing example" with possibly some additional output
+        else if (testCase == 9) // example code used in "Hashing example" with possibly some additional output
         {
-            HashTable* hashTable = new LinearProbingHashTable(3, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(3, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -250,33 +252,33 @@ int main()
             hashTable->remove("Void");
             hashTable->remove("Ball");
             hashTable->get("Void");
-            Magic* magic = hashTable->get("Wind");
-            cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+            Magic *magic = hashTable->get("Wind");
+            cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
             hashTable->print();
             printStats(hashTable, true, true, true, true, true);
             delete hashTable;
         }
 
-        else if(testCase == 10) //test stockUp (2 new items in the 2nd and last slot)
+        else if (testCase == 10) // test stockUp (2 new items in the 2nd and last slot)
         {
-            Shop* shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
+            Shop *shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
             cout << "Stock up: " << shop->stockUp("FireBall", 1, 100) << endl;
             cout << "Stock up: " << shop->stockUp("FireWind", 2, 200) << endl;
             shop->print();
             delete shop;
         }
-        else if(testCase == 11) //test stockUp (add to an existing item)
+        else if (testCase == 11) // test stockUp (add to an existing item)
         {
-            Shop* shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
+            Shop *shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
             cout << "Stock up: " << shop->stockUp("FireBall", 1, 100) << endl;
             cout << "Stock up: " << shop->stockUp("FireWind", 2, 200) << endl;
             cout << "Stock up: " << shop->stockUp("FireWind", 3, 200) << endl;
             shop->print();
             delete shop;
         }
-        else if(testCase == 12) //test stockUp (add to an existing item and change its price)
+        else if (testCase == 12) // test stockUp (add to an existing item and change its price)
         {
-            Shop* shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
+            Shop *shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
             cout << "Stock up: " << shop->stockUp("FireBall", 1, 100) << endl;
             cout << "Stock up: " << shop->stockUp("FireWind", 2, 200) << endl;
             cout << "Stock up: " << shop->stockUp("FireWind", 3, 200) << endl;
@@ -284,9 +286,9 @@ int main()
             shop->print();
             delete shop;
         }
-        else if(testCase == 13) //test stockUp (for two tables)
+        else if (testCase == 13) // test stockUp (for two tables)
         {
-            Shop* shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
+            Shop *shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
             cout << "Stock up: " << shop->stockUp("FireBall", 1, 100) << endl;
             cout << "Stock up: " << shop->stockUp("FireWind", 2, 200) << endl;
             cout << "Stock up: " << shop->stockUp("FireWind", 3, 200) << endl;
@@ -300,9 +302,9 @@ int main()
             delete shop;
         }
 
-        else if(testCase == 14) //test sell (more than enough stock)
+        else if (testCase == 14) // test sell (more than enough stock)
         {
-            Shop* shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
+            Shop *shop = new Shop(new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength), new LinearProbingHashTable(3, stringLength));
             cout << "Stock up: " << shop->stockUp("IceWind", 5, 200) << endl;
             cout << "Stock up: " << shop->stockUp("IceStorm", 5, 500) << endl;
             cout << "Sell: " << shop->sell("IceWind", 2) << endl;
@@ -310,9 +312,9 @@ int main()
             delete shop;
         }
 
-        else if(testCase == 15) //test get
+        else if (testCase == 15) // test get
         {
-            HashTable* hashTable = new LinearProbingHashTable(7, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(7, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -320,14 +322,14 @@ int main()
             hashTable->add(new Magic{"Fire", "Ox", 400, 40});
             hashTable->remove("Ball");
             hashTable->print();
-            Magic* magic = hashTable->get("Ball");
-            cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+            Magic *magic = hashTable->get("Ball");
+            cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
             printStats(hashTable, false, true, false, false, false);
             delete hashTable;
         }
-        else if(testCase == 16) //test get
+        else if (testCase == 16) // test get
         {
-            HashTable* hashTable = new LinearProbingHashTable(7, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(7, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -335,14 +337,14 @@ int main()
             hashTable->add(new Magic{"Fire", "Ox", 400, 40});
             hashTable->remove("Ball");
             hashTable->print();
-            Magic* magic = hashTable->get("Wind");
-            cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+            Magic *magic = hashTable->get("Wind");
+            cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
             printStats(hashTable, false, true, false, false, false);
             delete hashTable;
         }
-        else if(testCase == 17) //test get
+        else if (testCase == 17) // test get
         {
-            HashTable* hashTable = new LinearProbingHashTable(7, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(7, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -350,14 +352,14 @@ int main()
             hashTable->add(new Magic{"Fire", "Ox", 400, 40});
             hashTable->remove("Ball");
             hashTable->print();
-            Magic* magic = hashTable->get("Storm");
-            cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+            Magic *magic = hashTable->get("Storm");
+            cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
             printStats(hashTable, false, true, false, false, false);
             delete hashTable;
         }
-        else if(testCase == 18) //test get
+        else if (testCase == 18) // test get
         {
-            HashTable* hashTable = new LinearProbingHashTable(7, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(7, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -365,14 +367,14 @@ int main()
             hashTable->add(new Magic{"Fire", "Ox", 400, 40});
             hashTable->remove("Ball");
             hashTable->print();
-            Magic* magic = hashTable->get("Ox");
-            cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+            Magic *magic = hashTable->get("Ox");
+            cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
             printStats(hashTable, false, true, false, false, false);
             delete hashTable;
         }
-        else if(testCase == 19) //test get
+        else if (testCase == 19) // test get
         {
-            HashTable* hashTable = new LinearProbingHashTable(7, stringLength);
+            HashTable *hashTable = new LinearProbingHashTable(7, stringLength);
             hashTable->togglePrintSteps();
             hashTable->add(new Magic{"Fire", "Ball", 100, 10});
             hashTable->add(new Magic{"Fire", "Wind", 200, 20});
@@ -380,17 +382,16 @@ int main()
             hashTable->add(new Magic{"Fire", "Ox", 400, 40});
             hashTable->remove("Ball");
             hashTable->print();
-            Magic* magic = hashTable->get("Rain");
-            cout << "Last function call returned " << ((magic==nullptr)?"nullptr":(magic->prefix+magic->suffix)) << endl;
+            Magic *magic = hashTable->get("Rain");
+            cout << "Last function call returned " << ((magic == nullptr) ? "nullptr" : (magic->prefix + magic->suffix)) << endl;
             printStats(hashTable, false, true, false, false, false);
             delete hashTable;
         }
 
-        else //for the latter cases
+        else // for the latter cases
         {
             testCaseForTable((testCase - 20) / 6 + 1, (testCase - 20) % 6);
         }
-        
 
         cout << "=============================================" << endl;
     }

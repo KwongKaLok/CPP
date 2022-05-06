@@ -1,12 +1,13 @@
 #include "openAddressingHashTable.h"
 
-OpenAddressingHashTable::OpenAddressingHashTable(int m, int (*hash)(string, int))
+OpenAddressingHashTable::OpenAddressingHashTable(int m, int (*hash)(string, int)) : HashTable{m, hash}
 {
-    HashTable::m = m;
-    HashTable::hash = hash;
     table = new Cell[m];
     for (int i = 0; i < m; i++)
-        table[i] = Cell(nullptr, EMPTY);
+    {
+        table[i].magic = nullptr;
+        table[i].status = EMPTY;
+    }
 }
 OpenAddressingHashTable::~OpenAddressingHashTable()
 {
@@ -20,22 +21,40 @@ void OpenAddressingHashTable::performRehashing()
     Cell *large_table = new Cell[m];
     for (int i = 0; i < m; i++)
     {
-        large_table[i] = Cell(nullptr, EMPTY);
+        large_table[i].magic = nullptr;
+        large_table[i].status = EMPTY;
     }
+
     for (int i = 0; i < m / 2; i++)
     {
         if (table[i].status == ACTIVE)
         {
+            bool collided = false;
+
             for (int j = 0; j < m; j++)
             {
+
                 int hash_num = hi(table[i].magic->suffix, j);
+
+                if (!collided)
+                {
+                    if (printSteps)
+                        cout << "hash(\"" << table[i].magic->suffix << "\") = " << hash_num << endl;
+                }
+
                 comparisonCount++;
+
                 if (large_table[hash_num].status != ACTIVE)
                 {
                     large_table[hash_num].magic = table[i].magic;
                     large_table[hash_num].status = ACTIVE;
+                    if (printSteps)
+                        cout << large_table[hash_num].magic->prefix << large_table[hash_num].magic->suffix << " added at cell " << hash_num << endl;
                     break;
                 }
+                collided = true;
+                if (printSteps)
+                    cout << large_table[hash_num].magic->prefix << large_table[hash_num].magic->suffix << " collided at cell " << hash_num << endl;
             }
         }
     }
@@ -45,57 +64,128 @@ void OpenAddressingHashTable::performRehashing()
 
 bool OpenAddressingHashTable::add(Magic *magic)
 {
-    if (activeCellCount > ((m) / 2))
-    {
-        cout << "Rehashing is needed!" << endl;
-        performRehashing();
-        cout << "Rehashing is done!" << endl;
-    }
+    bool collided = false;
     for (int i = 0; i < m; i++)
     {
-        comparisonCount++;
         int hash_num = hi(magic->suffix, i);
+        if (!collided)
+        {
+            if (printSteps)
+                cout << "hash(\"" << magic->suffix << "\") = " << hash_num << endl;
+        }
+        if (activeCellCount > ((m) / 2))
+        {
+            if (printSteps)
+                cout << "Rehashing is needed!" << endl;
+            performRehashing();
+            hash_num = hi(magic->suffix, i);
+            if (printSteps)
+                cout << "Rehashing is done!" << endl;
+        }
+        comparisonCount++;
         if (table[hash_num].status != ACTIVE)
         {
             table[hash_num].magic = magic;
             table[hash_num].status = ACTIVE;
             activeCellCount += 1;
+            if (printSteps)
+                cout << magic->prefix << magic->suffix << " added at cell " << hash_num << endl;
             return true;
         }
+        collided = true;
+        if (printSteps)
+            cout << magic->prefix << magic->suffix << " collided at cell " << hash_num << endl;
     }
+    if (printSteps)
+            cout << magic->prefix << magic->suffix << " cannot be added "<< endl;
     return false;
 }
 
 bool OpenAddressingHashTable::remove(string key)
 {
+    bool collided = false;
     for (int i = 0; i < m; i++)
     {
         comparisonCount++;
         int hash_num = hi(key, i);
+        if (!collided)
+        {
+            if (printSteps)
+                cout << "hash(\"" << key << "\") = " << hash_num << endl;
+        }
         if (table[hash_num].status == ACTIVE && key == table[hash_num].magic->suffix)
         {
-            delete table[hash_num].magic;
+            if (printSteps)
+                cout << table[hash_num].magic->prefix << table[hash_num].magic->suffix << " removed at cell " << hash_num << endl;
             table[hash_num].status = DELETED;
             activeCellCount -= 1;
             return true;
         }
-        else if (table[hash_num].status == EMPTY)
+        else if (table[hash_num].status == EMPTY && !collided)
+        {
+            if (printSteps)
+                cout << key << " cannot be removed" << endl;
             return false;
+        }
+        else if (table[hash_num].status == EMPTY && collided)
+        {
+            if (printSteps)
+            {
+                cout << "visited cell " << hash_num << " but could not find it" << endl;
+                cout << key << " cannot be removed" << endl;
+            }
+            return false;
+        }
+        collided = true;
+        if (printSteps)
+            cout << "visited cell " << hash_num << " but could not find it" << endl;
     }
+    if (printSteps)
+        cout << key << " cannot be removed" << endl;
     return false;
 }
 
 Magic *OpenAddressingHashTable::get(string key)
 {
+    bool collided = false;
     for (int i = 0; i < m; i++)
     {
         int hash_num = hi(key, i);
         comparisonCount++;
+        if (!collided)
+        {
+            if (printSteps)
+                cout << "hash(\"" << key << "\") = " << hash_num << endl;
+        }
         if (table[hash_num].status == ACTIVE && key == table[hash_num].magic->suffix)
+        {
+            if(printSteps)
+                cout << table[hash_num].magic->prefix << table[hash_num].magic->suffix << " found at cell " << hash_num << endl;
             return table[hash_num].magic;
-        else if (table[hash_num].status == EMPTY)
+
+        }
+        else if (table[hash_num].status == EMPTY && !collided)
+        {
+            if (printSteps)
+                cout << key << " cannot be removed" << endl;
             return nullptr;
+        }
+        else if (table[hash_num].status == EMPTY && collided)
+        {
+            if (printSteps)
+            {
+                cout << "visited cell " << hash_num << " but could not find it" << endl;
+                cout << key << " cannot be removed" << endl;
+            }
+            return nullptr;
+        }
+
+        collided = true;
+        if (printSteps)
+            cout << "visited cell " << hash_num << " but could not find it" << endl;
     }
+    if (printSteps)
+        cout << key << " cannot be removed" << endl;
     return nullptr;
 }
 
@@ -114,6 +204,11 @@ int OpenAddressingHashTable::getClusterCount() const
         }
         else if (table[i].status == ACTIVE && (check[(i + m + 1) % m] == false || check[(i + m - 1) % m] == false))
             check[i] = true;
+        else if (table[i].status == ACTIVE && check[(i + m + 1) % m] == true && check[(i + m - 1) % m] == true)
+        {
+            num_of_consecutive--;
+            check[i] = true;
+        }
     }
     delete[] check;
     return num_of_consecutive;
@@ -153,7 +248,7 @@ string OpenAddressingHashTable::getClusterSizeSortedList() const
     int cluster_size = 0;
     int number_of_cluster = 0;
     bool counting = false;
-    int result_list = new int[m];
+    int *result_list = new int[m];
     string result_message = "";
     if (getLargestClusterSize() == 0)
         result_message = "(empty)";
@@ -165,6 +260,7 @@ string OpenAddressingHashTable::getClusterSizeSortedList() const
     {
         result_message = std::to_string(m);
     }
+
     else
     {
 
@@ -173,6 +269,7 @@ string OpenAddressingHashTable::getClusterSizeSortedList() const
             start_bit--;
             end_bit--;
         }
+
         for (int i = start_bit; i <= end_bit; i++)
         {
             if (table[(i + m) % m].status == ACTIVE)
@@ -198,9 +295,10 @@ string OpenAddressingHashTable::getClusterSizeSortedList() const
                 counting = false;
             }
         }
+
         for (int i = 0; i < number_of_cluster; i++)
         {
-            for (int j = i + 1; i < number_of_cluster; j++)
+            for (int j = i + 1; j < number_of_cluster; j++)
             {
                 if (result_list[j] > result_list[i])
                 {

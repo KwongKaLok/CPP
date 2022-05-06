@@ -7,19 +7,19 @@ class Shop
 {
 private:
     int profit;
-    HashTable* fireTable;
-    HashTable* iceTable;
-    HashTable* lightningTable;
+    HashTable *fireTable;
+    HashTable *iceTable;
+    HashTable *lightningTable;
 
-    HashTable* getTable(string prefix) const;
+    HashTable *getTable(string prefix) const;
 
 public:
-    Shop(HashTable* fireTable, HashTable* iceTable, HashTable* lightningTable);
+    Shop(HashTable *fireTable, HashTable *iceTable, HashTable *lightningTable);
     ~Shop();
-    bool stockUp(string name, int quantity, int price) const; 
+    bool stockUp(string name, int quantity, int price) const;
     bool sell(string name, int quantity);
 
-    //given; do NOT modify
+    // given; do NOT modify
     void print() const
     {
         cout << "Shop accumulated Profit = $" << profit << endl;
