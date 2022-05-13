@@ -62,15 +62,19 @@ bool Shop::stockUp(string name, int quantity, int price) const
     if (temp_magic)
     {
         temp_magic->quantity += adding_magic->quantity;
-        temp_magic->price = adding_magic->price;
+        temp_magic->price = adding_magic->price;               
     }
     else
     {
         if (that_table->add(adding_magic))
             return true;
         else
+        {
+            delete adding_magic;
             return false;
+        }
     }
+    delete adding_magic;
     return true;
 }
 bool Shop::sell(string name, int quantity)
@@ -103,7 +107,7 @@ bool Shop::sell(string name, int quantity)
     {
         if (temp_magic->quantity > removing_magic->quantity)
         {
-            temp_magic->quantity -= removing_magic->quantity;
+            temp_magic->quantity -= removing_magic->quantity; 
         }
         else if (temp_magic->quantity == removing_magic->quantity)
         {

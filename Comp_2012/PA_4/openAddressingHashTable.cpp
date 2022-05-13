@@ -12,7 +12,10 @@ OpenAddressingHashTable::OpenAddressingHashTable(int m, int (*hash)(string, int)
 OpenAddressingHashTable::~OpenAddressingHashTable()
 {
     for (int i = 0; i < m; i++)
-        delete table[i].magic;
+    {
+        if (table[i].status == ACTIVE)
+            delete table[i].magic;
+    }
     delete[] table;
 }
 void OpenAddressingHashTable::performRehashing()
@@ -54,7 +57,7 @@ void OpenAddressingHashTable::performRehashing()
                 }
                 collided = true;
                 if (printSteps)
-                    cout << large_table[hash_num].magic->prefix << large_table[hash_num].magic->suffix << " collided at cell " << hash_num << endl;
+                    cout << table[i].magic->prefix << table[i].magic->suffix << " collided at cell " << hash_num << endl;
             }
         }
     }
@@ -97,7 +100,7 @@ bool OpenAddressingHashTable::add(Magic *magic)
             cout << magic->prefix << magic->suffix << " collided at cell " << hash_num << endl;
     }
     if (printSteps)
-            cout << magic->prefix << magic->suffix << " cannot be added "<< endl;
+        cout << magic->prefix << magic->suffix << " cannot be added " << endl;
     return false;
 }
 
@@ -119,6 +122,7 @@ bool OpenAddressingHashTable::remove(string key)
                 cout << table[hash_num].magic->prefix << table[hash_num].magic->suffix << " removed at cell " << hash_num << endl;
             table[hash_num].status = DELETED;
             activeCellCount -= 1;
+            delete table[hash_num].magic;
             return true;
         }
         else if (table[hash_num].status == EMPTY && !collided)
@@ -159,15 +163,14 @@ Magic *OpenAddressingHashTable::get(string key)
         }
         if (table[hash_num].status == ACTIVE && key == table[hash_num].magic->suffix)
         {
-            if(printSteps)
+            if (printSteps)
                 cout << table[hash_num].magic->prefix << table[hash_num].magic->suffix << " found at cell " << hash_num << endl;
             return table[hash_num].magic;
-
         }
         else if (table[hash_num].status == EMPTY && !collided)
         {
             if (printSteps)
-                cout << key << " cannot be removed" << endl;
+                cout << key << " cannot be found" << endl;
             return nullptr;
         }
         else if (table[hash_num].status == EMPTY && collided)
@@ -175,7 +178,7 @@ Magic *OpenAddressingHashTable::get(string key)
             if (printSteps)
             {
                 cout << "visited cell " << hash_num << " but could not find it" << endl;
-                cout << key << " cannot be removed" << endl;
+                cout << key << " cannot be found" << endl;
             }
             return nullptr;
         }
@@ -185,7 +188,7 @@ Magic *OpenAddressingHashTable::get(string key)
             cout << "visited cell " << hash_num << " but could not find it" << endl;
     }
     if (printSteps)
-        cout << key << " cannot be removed" << endl;
+        cout << key << " cannot be found" << endl;
     return nullptr;
 }
 
@@ -216,29 +219,82 @@ int OpenAddressingHashTable::getClusterCount() const
 
 int OpenAddressingHashTable::getLargestClusterSize() const
 {
-    int count{0};
-    Cell temp_array[2 * m];
     int cluster_size{0};
-    int j = 0, k = 0;
-    while (j < 2)
+    int number_of_cluster{0};
+    int result{0};
+    int start_bit{0};
+    int end_bit{m - 1};
+    bool counting{false};
+    int *result_list = new int[m];
+    for (int i = 0; i < m; i++)
     {
-        for (int i = 0; i < m; i++)
-            temp_array[k++] = table[i];
-        j++;
+        result_list[i] = 0;
     }
-    k = 0;
-    for (int i = 0; i < 2 * m; i++)
-    {
-        count = 0;
-        while (temp_array[k++].status == ACTIVE)
-            ++count;
-        if (cluster_size < count)
-            cluster_size = count;
-    }
-    if (cluster_size > m)
-        cluster_size = cluster_size / 2;
 
-    return cluster_size;
+    while (table[(start_bit + m) % m].status == ACTIVE && table[(end_bit + m) % m].status == ACTIVE)
+    {
+        start_bit--;
+        end_bit--;
+    }
+    for (int i = start_bit; i <= end_bit; i++)
+    {
+        if (table[(i + m) % m].status == ACTIVE)
+        {
+            if (counting)
+            {
+                cluster_size++;
+                if (i == end_bit)
+                {
+                    result_list[number_of_cluster++] = cluster_size;
+                }
+            }
+            else
+            {
+                cluster_size = 1;
+                counting = true;
+            }
+        }
+        else if ((table[(i + m) % m].status != ACTIVE) && counting)
+        {
+            result_list[number_of_cluster++] = cluster_size;
+            cluster_size = 0;
+            counting = false;
+        }
+    }
+    result = result_list[0];
+    for (int i = 1; i < number_of_cluster; i++)
+    {
+        if (result < result_list[i])
+        {
+            result = result_list[i];
+        }
+    }
+    delete[] result_list;
+    return result;
+
+    // int count{0};
+    // Cell *temp_array = new Cell[2 * m];
+    // int cluster_size{0};
+    // int j = 0, k = 0;
+    // while (j < 2)
+    // {
+    //     for (int i = 0; i < m; i++)
+    //         temp_array[k++] = table[i];
+    //     j++;
+    // }
+    // k = 0;
+    // for (int i = 0; i < 2 * m; i++)
+    // {
+    //     count = 0;
+    //     while (temp_array[k++].status == ACTIVE)
+    //         ++count;
+    //     if (cluster_size < count)
+    //         cluster_size = count;
+    // }
+    // if (cluster_size > m)
+    //     cluster_size = cluster_size / 2;
+    // delete[] temp_array;
+    // return cluster_size;
 }
 
 string OpenAddressingHashTable::getClusterSizeSortedList() const
@@ -260,10 +316,8 @@ string OpenAddressingHashTable::getClusterSizeSortedList() const
     {
         result_message = std::to_string(m);
     }
-
     else
     {
-
         while (table[(start_bit + m) % m].status == ACTIVE && table[(end_bit + m) % m].status == ACTIVE)
         {
             start_bit--;
@@ -308,13 +362,19 @@ string OpenAddressingHashTable::getClusterSizeSortedList() const
                 }
             }
         }
-
         for (int i = 0; i < number_of_cluster; i++)
         {
             result_message += std::to_string(result_list[i]);
-            if (i != 0 || i != number_of_cluster - 1)
+            if (number_of_cluster <= 1)
             {
-                result_message += ",";
+                break;
+            }
+            else
+            {
+                if (i == 0 || i != number_of_cluster - 1)
+                {
+                    result_message += ",";
+                }
             }
         }
     }

@@ -4,5 +4,5 @@ QuadraticProbingHashTable::QuadraticProbingHashTable(int m, int (*hash)(string, 
 }
 int QuadraticProbingHashTable::hi(string k, int i) const
 {
-    return ((hash(k,m) + i ^ 2) % m);
+    return ((hash(k,m) + i * i) % m);
 }
