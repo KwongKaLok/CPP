@@ -1,0 +1,4 @@
+int minPartitions(string n)
+// {
+
+// }
