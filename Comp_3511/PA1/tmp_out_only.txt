@@ -1,0 +1,19 @@
+total 272
+drwx------@ 12 kalokkwong  staff   384B Oct 13 19:44 f2022_pa1_input_test_cases
+-rw-r--r--@  1 kalokkwong  staff   574B Oct  3 16:54 hw1-q3.c
+-rw-------@  1 kalokkwong  staff     2B Sep  1  2021 in01.txt
+-rw-------@  1 kalokkwong  staff    25B Jun 14 12:48 in02.txt
+-rw-------@  1 kalokkwong  staff    18B Oct 14 17:23 in03.txt
+-rw-------@  1 kalokkwong  staff    17B Oct 14 20:14 in04.txt
+-rw-------@  1 kalokkwong  staff    25B Jun 14 13:20 in05.txt
+-rw-------@  1 kalokkwong  staff    39B Jun 14 13:20 in06.txt
+-rw-------@  1 kalokkwong  staff    39B Jun 14 13:20 in07.txt
+-rw-r--r--@  1 kalokkwong  staff    12B Oct 15 00:58 in08.txt
+-rw-r--r--@  1 kalokkwong  staff    20B Oct 15 02:34 in09.txt
+-rw-r--r--@  1 kalokkwong  staff    63B Jun 14 13:02 in10.txt
+-rwxr-xr-x   1 kalokkwong  staff    50K Oct 15 14:17 myshell
+-rw-r--r--@  1 kalokkwong  staff   6.1K Oct 15 14:10 myshell.c
+-rw-r--r--@  1 kalokkwong  staff    22K Oct 13 19:44 myshell_sample
+-rw-------   1 kalokkwong  staff     9B Oct 15 14:18 tmp_in_then_out.txt
+-rw-------   1 kalokkwong  staff     0B Oct 15 14:18 tmp_out_only.txt
+-rw-------   1 kalokkwong  staff     9B Oct 15 14:18 tmp_out_then_in.txt

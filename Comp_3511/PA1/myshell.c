@@ -3,7 +3,7 @@
     PA1: Simplified Linux Shell (MyShell)
 
     Your name:
-    Your ITSC email:           @connect.ust.hk
+    Your ITSC email:           klkwongab@connect.ust.hk
 
     Declaration:
 
@@ -102,7 +102,78 @@ int main()
 // TODO: implementation of process_cmd
 void process_cmd(char *cmdline)
 {
-    // You can try to write: printf("%s\n", cmdline); to check the content of cmdline
+    char *pipe_segments[MAX_PIPE_SEGMENTS]; // character array buffer to store the pipe segements
+    int num_pipe_segments;                  // an output integer to store the number of pipe segment parsed by this function
+    int i, j;
+    char *arguments[MAX_ARGUMENTS_PER_SEGMENT] = {NULL};
+    int num_arguments;
+    int fd;
+    char *buffer[MAX_CMDLINE_LEN] = {NULL};
+    int skip = 0;
+    read_tokens(pipe_segments, cmdline, &num_pipe_segments, PIPE_CHAR);
+    if (num_pipe_segments == 1)
+    {
+        read_tokens(arguments, pipe_segments[0], &num_arguments, SPACE_CHARS);
+        for (j = 0; j < num_arguments; j++)
+        {
+            if (strcmp(arguments[j], "<") == 0 && skip == 0)
+            {
+                fd = open(arguments[j + 1],
+                          O_RDONLY,
+                          S_IRUSR | S_IWUSR);
+                close(0);
+                dup2(fd, 0);
+                skip = 1;
+                continue;
+            }
+            else if (strcmp(arguments[j], ">") == 0 && skip == 0)
+            {
+                fd = open(arguments[j + 1],
+                          O_CREAT | O_WRONLY,
+                          S_IRUSR | S_IWUSR);
+                close(1);
+                dup2(fd, 1);
+                skip = 1;
+                continue;
+            }
+            if (skip == 1)
+            {
+                skip = 0;
+                continue;
+            }
+
+            buffer[j] = arguments[j];
+        }
+        execvp(buffer[0], buffer);
+    }
+    else
+    {
+        int std_out = dup(1);
+        for (int i = 0; i < num_pipe_segments; i++)
+        {
+            int pfds[2];
+            if (i < num_pipe_segments - 1)
+                pipe(pfds);
+            pid_t pid = fork();
+            if (pid == 0)
+            {
+
+                if (i < num_pipe_segments - 1)
+                {
+                    close(1);
+                    dup2(pfds[1], 1);
+                }
+                char *arguments[MAX_ARGUMENTS_PER_SEGMENT] = {NULL};
+                int num_arguments;
+                read_tokens(arguments, pipe_segments[i], &num_arguments, SPACE_CHARS);
+                execvp(arguments[0], arguments);
+                exit(1);
+            }
+            close(pfds[1]);   // close parent's write pipe
+            dup2(pfds[0], 0); // copy the pipe input into the std_in (fd0)
+            wait(0);
+        }
+    }
 }
 
 // Implementation of read_tokens function
