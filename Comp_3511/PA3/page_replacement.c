@@ -2,8 +2,8 @@
     COMP3511 Fall 2022
     PA3: Page-Replacement Algorithms
 
-    Your name:
-    Your ITSC email:           @connect.ust.hk
+    Your name: Kwong Ka Lok
+    Your ITSC email: klkwongab@connect.ust.hk
 
     Declaration:
 
@@ -56,7 +56,9 @@ int reference_string[MAX_REFERENCE_STRING];
 int reference_string_length;
 int frames_available;
 int frames[MAX_FRAMES_AVAILABLE];
-
+int page_fault_count;
+int frame_position;
+int victim;
 // Helper function: Check whether the line is a blank line (for input parsing)
 int is_blank(char *line)
 {
@@ -265,20 +267,118 @@ void display_fault_frame(int current_frame)
     }
     printf("\n");
 }
-
+int check_exist(int ref_string)
+{
+    for (int i = 0; i < frames_available; i++)
+    {
+        if (frames[i] == ref_string)
+            return 1;
+    }
+    return 0;
+}
 void algorithm_FIFO()
 {
     // TODO: Implement the FIFO algorithm here
+    page_fault_count = 0;
+    frame_position = 0;
+    struct Queue fifo_queue;
+    queue_init(&fifo_queue);
+    for (int i = 0; i < reference_string_length; i++)
+    {
+        int curr_ref_string = reference_string[i];
+        if (check_exist(curr_ref_string) == 0)
+        {
+            if (fifo_queue.count < frames_available)
+            {
+                queue_enqueue(&fifo_queue, curr_ref_string);
+                frames[frame_position] = curr_ref_string;
+                frame_position++;
+            }
+            else
+            {
+                victim = queue_peek(&fifo_queue);
+                for (int j = 0; j < frames_available; j++)
+                {
+                    if (frames[j] == victim)
+                        frames[j] = curr_ref_string;
+                }
+                queue_dequeue(&fifo_queue);
+                queue_enqueue(&fifo_queue, curr_ref_string);
+            }
+            display_fault_frame(curr_ref_string);
+            page_fault_count++;
+        }
+        else
+            printf(template_no_page_fault, curr_ref_string);
+    }
+    printf(template_total_page_fault, page_fault_count);
 }
 
 void algorithm_OPT()
 {
     // TODO: Implement the OPT algorithm here
+    page_fault_count = 0;
+    frame_position = 0;
+    for (size_t i = 0; i < reference_string_length; i++)
+    {
+        int curr_ref_string = reference_string[i];
+        if (check_exist(curr_ref_string) == 0)
+        {
+            if (frame_position < frames_available)
+            {
+                frames[frame_position] = curr_ref_string;
+                frame_position++;
+            }
+            else
+            {
+                int longest = 0;
+                int victim_index = 0;
+                int never_exist[frames_available];
+                for (int l = 0; l < frames_available; l++)
+                    never_exist[l] = -1;
+                for (int k = 0; k < frames_available; k++)
+                {
+                    int not_exist = 1;
+                    for (int j = i; j < reference_string_length; j++)
+                    {
+                        if (frames[k] == reference_string[j])
+                        {
+                            if (longest < j)
+                            {
+                                longest = j;
+                                victim_index = k;
+                            }
+                            not_exist = 0;
+                            break;
+                        }
+                    }
+                    if (not_exist == 1)
+                        never_exist[k] = frames[k];
+                }
+                int temp = 10;
+                for (int l = 0; l < frames_available; l++)
+                {
+                    if (never_exist[l] != -1 && never_exist[l] < temp)
+                    {
+                        temp = never_exist[l];
+                        victim_index = l;
+                    }
+                }
+                frames[victim_index] = curr_ref_string;
+            }
+            display_fault_frame(curr_ref_string);
+            page_fault_count++;
+        }
+        else
+            printf(template_no_page_fault, curr_ref_string);
+    }
+    printf(template_total_page_fault, page_fault_count);
 }
 
 void algorithm_LRU()
 {
     // TODO: Implement the LRU algorithm here
+    
 }
 
 void initialize_frames()
