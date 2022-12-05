@@ -378,7 +378,53 @@ void algorithm_OPT()
 void algorithm_LRU()
 {
     // TODO: Implement the LRU algorithm here
-    
+    int counter[10];
+    for (int i = 0; i < 10; i++)
+        counter[i] = -1;
+    page_fault_count = 0;
+    frame_position = 0;
+    for (size_t i = 0; i < reference_string_length; i++)
+    {
+        int curr_ref_string = reference_string[i];
+        if (check_exist(curr_ref_string) == 0)
+        {
+            if (frame_position < frames_available)
+            {
+                frames[frame_position] = curr_ref_string;
+                counter[frames[frame_position]] = i;
+                frame_position++;
+            }
+            else
+            {
+                int victim_frame = frames[0];
+                int LR = counter[frames[0]];
+                for (int j = 1; j < frames_available; j++)
+                {
+                    if (counter[frames[j]] < LR)
+                    {
+                        LR = counter[frames[j]];
+                        victim_frame = frames[j];
+                    }
+                }
+                for (int j = 0; j < frame_position; j++)
+                {
+                    if (frames[j] == victim_frame)
+                    {
+                        frames[j] = curr_ref_string;
+                        counter[curr_ref_string] = i;
+                    }
+                }
+            }
+            display_fault_frame(curr_ref_string);
+            page_fault_count++;
+        }
+        else
+        {
+            printf(template_no_page_fault, curr_ref_string);
+            counter[curr_ref_string] = i;
+        }
+    }
+    printf(template_total_page_fault, page_fault_count);
 }
 
 void initialize_frames()
